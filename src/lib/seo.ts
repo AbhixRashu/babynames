@@ -13,8 +13,46 @@ export interface FaqItem {
   a: string;
 }
 
+const TRENDING_RANK = new Map<string, number>([
+  ['Aarav/boy', 1], ['Aadhya/girl', 2], ['Vihaan/boy', 3], ['Ananya/girl', 4],
+  ['Ayaan/boy', 5], ['Aaradhya/girl', 6], ['Arjun/boy', 7], ['Diya/girl', 8],
+  ['Ahmed/boy', 9], ['Aisha/girl', 10], ['Noah/boy', 11], ['Emma/girl', 12],
+  ['Liam/boy', 13], ['Olivia/girl', 14], ['Ethan/boy', 15], ['Sophia/girl', 16],
+  ['Ibrahim/boy', 17], ['Fatima/girl', 18], ['Reyansh/boy', 19], ['Myra/girl', 20],
+  ['Krishna/boy', 21], ['Anaya/girl', 22], ['Arnav/boy', 23], ['Ishita/girl', 24],
+  ['Veer/boy', 25], ['Kavya/girl', 26], ['Kabir/boy', 27], ['Meera/girl', 28],
+  ['Hamza/boy', 29], ['Zara/girl', 30], ['Yusuf/boy', 31], ['Maryam/girl', 32],
+  ['Ryan/boy', 33], ['Ava/girl', 34], ['James/boy', 35], ['Mia/girl', 36],
+  ['John/boy', 37], ['Amelia/girl', 38], ['Daniel/boy', 39], ['Charlotte/girl', 40],
+  ['Gabriel/boy', 41], ['Harper/girl', 42], ['Elijah/boy', 43], ['Evelyn/girl', 44],
+  ['David/boy', 45], ['Isabella/girl', 46], ['Samuel/boy', 47], ['Luna/girl', 48],
+  ['Joseph/boy', 49], ['Nova/girl', 50], ['Luke/boy', 51], ['Avery/girl', 52],
+  ['Leo/boy', 53], ['Zoya/girl', 54], ['Karan/boy', 55], ['Simran/girl', 56],
+  ['Gurpreet/boy', 57], ['Harleen/girl', 58], ['Yuvraj/boy', 59], ['Jasleen/girl', 60],
+  ['Taranjit/boy', 61], ['Kiran/girl', 62], ['Navdeep/boy', 63], ['Prabhleen/girl', 64],
+  ['Kai/boy', 65], ['Aria/girl', 66], ['Skyler/boy', 67], ['Skylar/girl', 68],
+  ['Alexander/boy', 69], ['Alexa/girl', 70], ['Omar/boy', 71], ['Sana/girl', 72],
+  ['Hassan/boy', 73], ['Zainab/girl', 74], ['Abdullah/boy', 75], ['Ruhi/girl', 76],
+  ['Ali/boy', 77], ['Tanvi/girl', 78], ['Amir/boy', 79], ['Navya/girl', 80],
+  ['Rizwan/boy', 81], ['Pihu/girl', 82], ['Sai/boy', 83], ['Aditi/girl', 84],
+  ['Vivaan/boy', 85], ['Pari/girl', 86], ['Rivaan/boy', 87], ['Samaira/girl', 88],
+  ['Skyler/unisex', 89], ['Avery/unisex', 90], ['Kai/unisex', 91], ['Sage/unisex', 92],
+  ['Riley/unisex', 93], ['Jordan/unisex', 94], ['Alexis/unisex', 95], ['Morgan/unisex', 96],
+  ['Samar/unisex', 97], ['Noor/unisex', 98], ['Rizwan/unisex', 99], ['Tanvi/unisex', 100],
+  ['Navya/unisex', 101], ['Vaishnavi/unisex', 102], ['Casey/unisex', 103], ['Taylor/unisex', 104],
+]);
+
 export function byRank(names: BabyName[], limit: number): BabyName[] {
-  return [...names].sort((a, b) => (a.rank ?? 99999) - (b.rank ?? 99999)).slice(0, limit);
+  const seen = new Set<string>();
+  return [...names]
+    .sort((a, b) => (TRENDING_RANK.get(`${a.name}/${a.gender}`) ?? 99999) - (TRENDING_RANK.get(`${b.name}/${b.gender}`) ?? 99999))
+    .filter((n) => {
+      const key = `${n.name}/${n.gender}`.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, limit);
 }
 
 export function genderCounts(names: BabyName[]): Record<string, number> {
