@@ -5,7 +5,7 @@ export const SITE = {
   description:
     'Find the perfect baby name. Search thousands of baby boy, girl and unisex names by origin, starting letter or meaning. Free, private, 100% in your browser.',
   ogImage: '/og.png',
-  themeColor: '#faf6f0',
+  themeColor: '#fafafa',
 };
 
 export const ORGANIZATION = {
