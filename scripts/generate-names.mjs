@@ -11,9 +11,27 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const dataFile = join(here, '..', 'src', 'data', 'names.json');
 
-const BOY = 'an on en in esh it av ar ay at ul aj iv as er ic il is od ok ooj or ov uk un us ab ad ak al am ap az ith ik og ush utt ett ell eth ian iel ius ard indra vansh vir wan mit nath pal raj rup shil sit tej vek yan yo ze om ran deep jeet bir'.split(' ');
-const GIRL = 'a ia ra na da la ma ni sha ka vi ta li mi ri sa si ti va ya ara aya ela ena ina ita ola una ika ini ee yaa ana eti eya isa ivi ona ella ette ine ira issa ria lee nia preet deep leen vati kumari rani jot bala mala ja ga ha ba ika'.split(' ');
-const UNISEX = 'an a i on in ay ee en is or al ara aya den er ie ley lyn ren sa si ton yan aan am as at el em es io son lee de raj preet man een'.split(' ');
+const BOY = {
+  Modern: 'an en in on esh it av ay as iv ian vansh vir yo ek oz'.split(' '),
+  Classic: 'ar at aj ic il is al am om ran deep jeet raj nath pal'.split(' '),
+  Trendy: 'ix iz ox ow ayd iy er ush utt ell eth vek shil yan'.split(' '),
+  Unique: 'od ok ooj or ov ith ius ard indra rup sit tej bir igh'.split(' '),
+  'Old Fashioned': 'bert mund ford wald ick olt burn fred ald stan ley bald mann'.split(' '),
+};
+const GIRL = {
+  Modern: 'a ia ra na sha ka vi ta li mi sa ya ee'.split(' '),
+  Classic: 'ma ni ri si ti va da la ja ga ha ba ika'.split(' '),
+  Trendy: 'ara aya ela ena ina ita ola una ika ini yaa lee'.split(' '),
+  Unique: 'ana eti eya isa ivi ona ella ette ine ira issa ria'.split(' '),
+  'Old Fashioned': 'nia preet deep leen vati kumari rani jot bala mala itha'.split(' '),
+};
+const UNISEX = {
+  Modern: 'an on in ay en is el es io'.split(' '),
+  Classic: 'al am as at de raj man son'.split(' '),
+  Trendy: 'a i ee ie ren sa si ton'.split(' '),
+  Unique: 'ara aya den er ley lyn yan'.split(' '),
+  'Old Fashioned': 'aan preet jeet deep dev sen'.split(' '),
+};
 
 // name -> style override for notable existing names
 const OVERRIDE = {
@@ -362,24 +380,26 @@ const boyBases = out.filter((n) => n.gender === 'boy' || n.gender === 'unisex');
 const girlBases = out.filter((n) => n.gender === 'girl' || n.gender === 'unisex');
 const unisexBases = out.filter((n) => n.gender === 'unisex');
 
-function generate(pool, suffixes, gender, originFilter) {
+function generate(pool, suffixMap, gender, originFilter) {
   const added = [];
   for (const base of pool) {
     if (originFilter && base.origin !== originFilter) continue;
     for (const stem of stemsOf(base.name)) {
-      for (const suf of suffixes) {
-        const name = stem + suf;
-        if (!ok(name)) continue;
-        const key = name.toLowerCase();
-        if (seen.has(key)) continue;
-        seen.set(key, out.length + added.length);
-        added.push({
-          name,
-          gender,
-          origin: base.origin,
-          meaning: base.meaning,
-          style: base.style,
-        });
+      for (const [style, suffixes] of Object.entries(suffixMap)) {
+        for (const suf of suffixes) {
+          const name = stem + suf;
+          if (!ok(name)) continue;
+          const key = name.toLowerCase();
+          if (seen.has(key)) continue;
+          seen.set(key, out.length + added.length);
+          added.push({
+            name,
+            gender,
+            origin: base.origin,
+            meaning: base.meaning,
+            style,
+          });
+        }
       }
     }
   }
