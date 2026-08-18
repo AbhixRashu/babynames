@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const title = 'My Shortlist — Saved Baby Names';
+const title = 'My Saved Baby Names — Shortlist & Favourites';
 const description =
-  'View all the baby names you have saved to your shortlist. Remove names or clear the whole list anytime — everything is stored privately in your browser.';
+  'View the baby names you have saved to your shortlist. Remove names or clear the whole list at any time — everything stays stored privately in your browser.';
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} noindex>
   <section class="pb-8 pt-2 sm:pt-6">
     <div class="max-w-3xl">
       <p class="eyebrow">Your favourites</p>
@@ -23,6 +23,11 @@ const description =
         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /></svg>
         Clear all
       </button>
+    </div>
+
+    <div data-shortlist-loading class="mt-4 flex items-center justify-center gap-2 rounded-2xl border border-dashed border-line-strong px-4 py-8 text-sm text-mute">
+      <svg viewBox="0 0 24 24" class="h-4 w-4 animate-spin" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9" /></svg>
+      Loading your shortlist…
     </div>
 
     <div data-shortlist-grid class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
@@ -57,6 +62,6 @@ const description =
   <script>
     import { mountShortlist } from '../scripts/shortlist';
     const root = document.querySelector<HTMLElement>('[data-shortlist-grid]')?.parentElement;
-    if (root) mountShortlist(root);
+    if (root) void mountShortlist(root);
   </script>
 </BaseLayout>

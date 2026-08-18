@@ -10,6 +10,7 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [
     sitemap({
+      filter: (page) => !page.includes('/shortlist'),
       serialize: (item) => {
         if (item.url !== 'https://babynames.salarypitcher.com/') {
           item.url = item.url.replace(/\/$/, '');

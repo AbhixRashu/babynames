@@ -1,7 +1,9 @@
-import { byName, similarNames } from '../lib/names';
 import { getShortlist, removeSaved, clearShortlist } from '../lib/shortlist';
 
-export function mountShortlist(root: HTMLElement) {
+export async function mountShortlist(root: HTMLElement) {
+  const { byName, similarNames } = await import('../lib/names');
+  const loadingEl = root.querySelector<HTMLElement>('[data-shortlist-loading]');
+  if (loadingEl) loadingEl.hidden = true;
   const grid = root.querySelector<HTMLElement>('[data-shortlist-grid]');
   const emptyEl = root.querySelector<HTMLElement>('[data-shortlist-empty]');
   const countEl = root.querySelector<HTMLElement>('[data-shortlist-count]');
@@ -63,6 +65,7 @@ export function mountShortlist(root: HTMLElement) {
     meta.innerHTML = `
       <span class="badge-gender badge-${n.gender}">${n.gender}</span>
       <span class="pill">${n.origin}</span>
+      ${(n.vibes || []).map((v) => `<span class="badge-vibe vibe-${v.replace(/[^a-z]/gi, '').toLowerCase()}">${v}</span>`).join('')}
       ${n.style ? `<span class="badge-style badge-style-${n.style.replace(/ /g, '-')}">${n.style}</span>` : ''}
       ${n.rank ? `<span class="pill">#${n.rank} popular</span>` : ''}
     `;
@@ -90,6 +93,7 @@ export function mountShortlist(root: HTMLElement) {
           <div class="flex flex-wrap items-center gap-2">
             <span class="badge-gender badge-${n.gender}">${n.gender}</span>
             <span class="pill">${n.origin}</span>
+            ${(n.vibes || []).map((v) => `<span class="badge-vibe vibe-${v.replace(/[^a-z]/gi, '').toLowerCase()}">${v}</span>`).join('')}
             ${n.style ? `<span class="badge-style badge-style-${n.style.replace(/ /g, '-')}">${n.style}</span>` : ''}
             ${n.rank ? `<span class="pill">#${n.rank} in popularity</span>` : ''}
           </div>
@@ -103,6 +107,10 @@ export function mountShortlist(root: HTMLElement) {
         <p class="text-[15px] leading-relaxed text-ink-soft">
           <strong class="text-ink">Meaning:</strong> ${n.meaning}
         </p>
+        ${n.description ? `
+        <p class="mt-4 border-t border-line pt-4 text-sm leading-relaxed text-ink-soft">
+          <strong class="text-ink">About this name:</strong> ${n.description}
+        </p>` : ''}
         <p class="mt-3 text-sm leading-relaxed text-mute">
           <strong class="text-ink">Origin:</strong> ${n.origin} · <strong class="text-ink">Gender:</strong> ${n.gender}
           ${n.rank ? ` · <strong class="text-ink">Popularity:</strong> #${n.rank}` : ''}

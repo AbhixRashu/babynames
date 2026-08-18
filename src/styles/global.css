@@ -485,6 +485,88 @@
 .dark .badge-style-Trendy { color: var(--pink); }
 .dark .badge-style-Unique { color: #6fceb3; background: #14352c; border-color: #2c5f4f; }
 
+.badge-rashi {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.22rem 0.6rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #b06a2e;
+  background: #fbf1e3;
+  border: 1px solid #ecd9b8;
+}
+.badge-category {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.22rem 0.6rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #2e7d9e;
+  background: #e3f2f7;
+  border: 1px solid #c0e2ee;
+}
+.dark .badge-rashi { color: #f0b87a; background: #3b2c1c; border-color: #5c4427; }
+.dark .badge-category { color: #7fc7e0; background: #143038; border-color: #2c5f6b; }
+
+.badge-vibe {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.22rem 0.6rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid;
+}
+.vibe-modern {
+  color: #2e7d9e;
+  background: #e3f2f7;
+  border-color: #c0e2ee;
+}
+.vibe-classictraditional {
+  color: #a9712f;
+  background: var(--gold-soft);
+  border-color: var(--gold-ring);
+}
+.vibe-popular {
+  color: #d95f89;
+  background: var(--pink-soft);
+  border-color: var(--pink-ring);
+}
+.vibe-uniquerare {
+  color: #6d5bb8;
+  background: var(--lav-soft);
+  border-color: rgba(157, 139, 212, 0.45);
+}
+.vibe-royalelegant {
+  color: #a13d52;
+  background: #f7e7ec;
+  border-color: #ecc4cf;
+}
+.vibe-natureinspired {
+  color: #2e9e7d;
+  background: #e2f4ee;
+  border-color: #b9e3d5;
+}
+.vibe-shortsimple {
+  color: #667085;
+  background: #eef0f4;
+  border-color: #d8dce3;
+}
+.dark .vibe-modern { color: #7fc7e0; background: #143038; border-color: #2c5f6b; }
+.dark .vibe-classictraditional { color: #f0b87a; background: #3b2c1c; border-color: #5c4427; }
+.dark .vibe-popular { color: var(--pink); background: #3c2230; border-color: #6b3a50; }
+.dark .vibe-uniquerare { color: #b2a3e3; background: #282242; border-color: #4b3f7a; }
+.dark .vibe-royalelegant { color: #e58fa4; background: #3a1e28; border-color: #6b3347; }
+.dark .vibe-natureinspired { color: #6fceb3; background: #14352c; border-color: #2c5f4f; }
+.dark .vibe-shortsimple { color: #aab3c2; background: #262a33; border-color: #3d434e; }
+
 /* ---- modal ---- */
 .modal-backdrop {
   position: fixed;

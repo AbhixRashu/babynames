@@ -57,6 +57,28 @@ const genders = [
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2">
+      <div data-rashi-wrap hidden>
+        <label class="field-label" for="rashi-select">Rashi (birth star)</label>
+        <select id="rashi-select" class="select mt-2" data-rashi></select>
+      </div>
+      <div data-category-wrap hidden>
+        <label class="field-label" for="category-select">Category</label>
+        <select id="category-select" class="select mt-2" data-category></select>
+      </div>
+    </div>
+
+    <div>
+      <span class="field-label">Vibe / Style</span>
+      <div class="mt-2 flex flex-wrap gap-2" data-vibes>
+        {(['Modern', 'Classic/Traditional', 'Popular', 'Unique/Rare', 'Royal/Elegant', 'Nature-inspired', 'Short & Simple']).map((v) => (
+          <button type="button" data-vibe={v} class="chip" aria-pressed="false">
+            {v}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
       <div>
         <label class="field-label" for="style-select">Name style</label>
         <select id="style-select" class="select mt-2" data-style></select>
@@ -97,6 +119,11 @@ const genders = [
       <p class="text-sm font-semibold text-ink" data-count></p>
       <p class="text-xs text-mute">Tap a name for details</p>
     </div>
+    <div data-relax-note class="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200" hidden></div>
+    <div data-loading class="mb-3 flex items-center justify-center gap-2 rounded-2xl border border-dashed border-line-strong px-4 py-6 text-sm text-mute">
+      <svg viewBox="0 0 24 24" class="h-4 w-4 animate-spin" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9" /></svg>
+      Loading {defaultGender === 'all' ? 'names' : `${defaultGender} names`}…
+    </div>
     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-results></div>
     <div data-empty class="rounded-2xl border border-dashed border-line-strong p-8 text-center" hidden>
       <p class="text-base font-semibold text-ink">No names match those filters</p>
@@ -116,7 +143,7 @@ const genders = [
   const root = document.querySelector<HTMLElement>('[data-generator-root]');
   if (root) {
     const params = new URLSearchParams(window.location.search);
-    mountGenerator({
+    void mountGenerator({
       root,
       defaultGender: (params.get('gender') || root.dataset.defaultGender || 'all') as 'all' | 'boy' | 'girl' | 'unisex',
       defaultOrigin: params.get('origin') || root.dataset.defaultOrigin || 'All origins',

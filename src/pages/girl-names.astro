@@ -6,9 +6,9 @@ import { NAMES } from '../lib/names';
 const girls = NAMES.filter((n) => n.gender === 'girl');
 const top = [...girls].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 5);
 
-const title = 'Baby Girl Names — Beautiful, Elegant & Meaningful';
+const title = 'Baby Girl Names — Beautiful, Elegant & Unique';
 const description =
-  'Browse hundreds of baby girl names with meanings and origins. Filter by religion, starting letter or meaning — from Aaradhya to Zoe.';
+  'Browse hundreds of baby girl names with meanings and origins. Filter by religion, letter or meaning to find a beautiful, elegant name for your daughter.';
 ---
 
 <BaseLayout title={title} description={description}>

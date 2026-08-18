@@ -1,5 +1,5 @@
 import type { BabyName } from '../lib/types';
-import { NAMES, ORIGINS, STYLES, LETTERS, filterNames, pickBatch, similarNames, byName, EMPTY_FILTER, type FilterState } from '../lib/names';
+import type { FilterState, FilterResult } from '../lib/names';
 import { toggleSaved, isSaved } from '../lib/shortlist';
 
 const BATCH_SIZE = 12;
@@ -12,8 +12,25 @@ interface MountOptions {
   defaultStyle?: string;
 }
 
-export function mountGenerator(opts: MountOptions) {
+export async function mountGenerator(opts: MountOptions) {
+  const {
+    NAMES,
+    ORIGINS,
+    STYLES,
+    LETTERS,
+    pickBatch,
+    similarNames,
+    byName,
+    EMPTY_FILTER,
+    RASHIS,
+    MUSLIM_CATEGORIES,
+    rashiLabel,
+    matchWithFallback,
+  } = await import('../lib/names');
+
   const root = opts.root;
+  const loadingEl = root.querySelector<HTMLElement>('[data-loading]');
+  if (loadingEl) loadingEl.hidden = true;
   const state: FilterState = {
     ...EMPTY_FILTER,
     gender: opts.defaultGender ?? 'all',
@@ -29,12 +46,18 @@ export function mountGenerator(opts: MountOptions) {
   const originSelect = root.querySelector<HTMLSelectElement>('[data-origin]');
   const letterSelect = root.querySelector<HTMLSelectElement>('[data-letter]');
   const styleSelect = root.querySelector<HTMLSelectElement>('[data-style]');
+  const rashiSelect = root.querySelector<HTMLSelectElement>('[data-rashi]');
+  const categorySelect = root.querySelector<HTMLSelectElement>('[data-category]');
+  const rashiWrap = root.querySelector<HTMLElement>('[data-rashi-wrap]');
+  const categoryWrap = root.querySelector<HTMLElement>('[data-category-wrap]');
+  const vibeChips = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-vibe]'));
   const queryInput = root.querySelector<HTMLInputElement>('[data-query]');
   const generateBtn = root.querySelector<HTMLButtonElement>('[data-generate]');
   const shuffleBtn = root.querySelector<HTMLButtonElement>('[data-shuffle]');
   const resultsEl = root.querySelector<HTMLElement>('[data-results]');
   const countEl = root.querySelector<HTMLElement>('[data-count]');
   const emptyEl = root.querySelector<HTMLElement>('[data-empty]');
+  const relaxNoteEl = root.querySelector<HTMLElement>('[data-relax-note]');
   const modal = root.querySelector<HTMLElement>('[data-modal]');
 
   const letterPlaceholder = 'Any letter';
@@ -70,6 +93,30 @@ export function mountGenerator(opts: MountOptions) {
       styleSelect.appendChild(opt);
     });
   }
+  if (rashiSelect) {
+    RASHIS.forEach((r) => {
+      const opt = document.createElement('option');
+      opt.value = r;
+      opt.textContent = r === 'All rashis' ? 'Any rashi' : r;
+      if (r === state.rashi) opt.selected = true;
+      rashiSelect.appendChild(opt);
+    });
+  }
+  if (categorySelect) {
+    MUSLIM_CATEGORIES.forEach((c) => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c === 'All categories' ? 'Any category' : c;
+      if (c === state.category) opt.selected = true;
+      categorySelect.appendChild(opt);
+    });
+  }
+
+  const syncSubFilters = () => {
+    if (rashiWrap) rashiWrap.hidden = state.origin !== 'Hindu';
+    if (categoryWrap) categoryWrap.hidden = state.origin !== 'Muslim';
+  };
+  syncSubFilters();
 
   // ---- set active gender chip ----
   const syncGenderChips = () => {
@@ -81,18 +128,33 @@ export function mountGenerator(opts: MountOptions) {
   };
   syncGenderChips();
 
+  const syncVibeChips = () => {
+    vibeChips.forEach((c) => {
+      const on = state.vibes.includes(c.dataset.vibe || '');
+      c.classList.toggle('active', on);
+      c.setAttribute('aria-pressed', String(on));
+    });
+  };
+  syncVibeChips();
+
   // ---- rendering ----
-  function renderResults() {
+  function renderResults(r?: FilterResult) {
     const saved = getSavedSet();
     if (!resultsEl) return;
     resultsEl.innerHTML = '';
+    if (relaxNoteEl) {
+      const note = r ? relaxedNote(r) : '';
+      relaxNoteEl.hidden = !note;
+      relaxNoteEl.textContent = note;
+    }
     if (!batch.length) {
       if (emptyEl) emptyEl.hidden = false;
       if (countEl) countEl.textContent = '';
       return;
     }
     if (emptyEl) emptyEl.hidden = true;
-    if (countEl) countEl.textContent = `${batch.length} names`;
+    const total = r?.names.length ?? batch.length;
+    if (countEl) countEl.textContent = total > batch.length ? `Showing ${batch.length} of ${total} names` : `${batch.length} names`;
     const frag = document.createDocumentFragment();
     batch.forEach((n, i) => {
       frag.appendChild(buildCard(n, saved.has(n.name), i));
@@ -139,6 +201,9 @@ export function mountGenerator(opts: MountOptions) {
     meta.innerHTML = `
       <span class="badge-gender badge-${n.gender}">${n.gender}</span>
       <span class="pill">${n.origin}</span>
+      ${n.rashi ? `<span class="badge-rashi">${rashiLabel(n.rashi)}</span>` : ''}
+      ${n.category ? `<span class="badge-category">${n.category}</span>` : ''}
+      ${(n.vibes || []).map((v) => `<span class="badge-vibe vibe-${v.replace(/[^a-z]/gi, '').toLowerCase()}">${v}</span>`).join('')}
       ${n.style ? `<span class="badge-style badge-style-${n.style.replace(/ /g, '-')}">${n.style}</span>` : ''}
       ${n.rank ? `<span class="pill">#${n.rank} popular</span>` : ''}
     `;
@@ -173,6 +238,9 @@ export function mountGenerator(opts: MountOptions) {
           <div class="flex flex-wrap items-center gap-2">
             <span class="badge-gender badge-${n.gender}">${n.gender}</span>
             <span class="pill">${n.origin}</span>
+            ${n.rashi ? `<span class="badge-rashi">${rashiLabel(n.rashi)}</span>` : ''}
+            ${n.category ? `<span class="badge-category">${n.category}</span>` : ''}
+            ${(n.vibes || []).map((v) => `<span class="badge-vibe vibe-${v.replace(/[^a-z]/gi, '').toLowerCase()}">${v}</span>`).join('')}
             ${n.style ? `<span class="badge-style badge-style-${n.style.replace(/ /g, '-')}">${n.style}</span>` : ''}
             ${n.rank ? `<span class="pill">#${n.rank} in popularity</span>` : ''}
           </div>
@@ -186,6 +254,10 @@ export function mountGenerator(opts: MountOptions) {
         <p class="text-[15px] leading-relaxed text-ink-soft">
           <strong class="text-ink">Meaning:</strong> ${n.meaning}
         </p>
+        ${n.description ? `
+        <p class="mt-4 border-t border-line pt-4 text-sm leading-relaxed text-ink-soft">
+          <strong class="text-ink">About this name:</strong> ${n.description}
+        </p>` : ''}
         <p class="mt-3 text-sm leading-relaxed text-mute">
           <strong class="text-ink">Origin:</strong> ${n.origin} · <strong class="text-ink">Gender:</strong> ${n.gender}
           ${n.rank ? ` · <strong class="text-ink">Popularity:</strong> #${n.rank}` : ''}
@@ -230,35 +302,41 @@ export function mountGenerator(opts: MountOptions) {
   }
 
   // ---- actions ----
+  function relaxedNote(r: FilterResult): string {
+    if (!r.relaxed.length) return '';
+    const words = r.relaxed.map((x) => (x === 'vibe' ? 'vibe' : x === 'style' ? 'name style' : x === 'letter' ? 'starting letter' : 'filters'));
+    return `Only ${r.total} names matched those exact filters, so we widened the ${words.join(' and ')} to show you ${r.names.length} names. Try picking a different letter or style for more exact results.`;
+  }
+
   function runGenerate(scrollToResults = true) {
-    const matches = filterNames(NAMES, state);
-    if (!matches.length) {
+    const r = matchWithFallback(NAMES, state);
+    if (!r.names.length) {
       batch = [];
       seen = [];
-      renderResults();
+      renderResults(r);
       return;
     }
-    const pick = pickBatch(matches, BATCH_SIZE, seen);
+    const pick = pickBatch(r.names, BATCH_SIZE, seen);
     if (pick.length < BATCH_SIZE) {
       seen = [];
-      batch = pickBatch(matches, BATCH_SIZE, seen);
+      batch = pickBatch(r.names, BATCH_SIZE, seen);
     } else {
       batch = pick;
     }
     seen = seen.concat(batch.map((b) => b.name));
-    renderResults();
+    renderResults(r);
     if (scrollToResults && resultsEl) resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function runShuffle() {
-    const matches = filterNames(NAMES, state);
-    if (!matches.length) {
+    const r = matchWithFallback(NAMES, state);
+    if (!r.names.length) {
       batch = [];
-      renderResults();
+      renderResults(r);
       return;
     }
-    batch = pickBatch(matches, BATCH_SIZE);
-    renderResults();
+    batch = pickBatch(r.names, BATCH_SIZE);
+    renderResults(r);
   }
 
   // ---- wiring ----
@@ -270,6 +348,26 @@ export function mountGenerator(opts: MountOptions) {
   });
   originSelect?.addEventListener('change', (e) => {
     state.origin = (e.target as HTMLSelectElement).value;
+    state.rashi = EMPTY_FILTER.rashi;
+    state.category = EMPTY_FILTER.category;
+    if (rashiSelect) rashiSelect.value = EMPTY_FILTER.rashi;
+    if (categorySelect) categorySelect.value = EMPTY_FILTER.category;
+    syncSubFilters();
+  });
+  rashiSelect?.addEventListener('change', (e) => {
+    state.rashi = (e.target as HTMLSelectElement).value;
+  });
+  categorySelect?.addEventListener('change', (e) => {
+    state.category = (e.target as HTMLSelectElement).value;
+  });
+  vibeChips.forEach((c) => {
+    c.addEventListener('click', () => {
+      const v = c.dataset.vibe || '';
+      const i = state.vibes.indexOf(v);
+      if (i >= 0) state.vibes.splice(i, 1);
+      else state.vibes.push(v);
+      syncVibeChips();
+    });
   });
   letterSelect?.addEventListener('change', (e) => {
     state.letter = (e.target as HTMLSelectElement).value;

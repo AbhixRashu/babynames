@@ -6,9 +6,9 @@ import { NAMES } from '../lib/names';
 const boys = NAMES.filter((n) => n.gender === 'boy');
 const top = [...boys].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 5);
 
-const title = 'Baby Boy Names — Strong, Handsome & Unique Options';
+const title = 'Baby Boy Names — Strong, Unique & Handsome';
 const description =
-  'Browse hundreds of baby boy names with meanings and origins. Filter by religion, starting letter or meaning — from Aarav to Zachary.';
+  'Browse hundreds of baby boy names with meanings and origins. Filter by religion, letter or meaning to find a strong, classic or unique name for your son.';
 ---
 
 <BaseLayout title={title} description={description}>

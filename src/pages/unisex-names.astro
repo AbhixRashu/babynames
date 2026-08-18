@@ -6,9 +6,9 @@ import { NAMES } from '../lib/names';
 const unisex = NAMES.filter((n) => n.gender === 'unisex');
 const top = [...unisex].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 5);
 
-const title = 'Unisex Baby Names — Gender-Neutral Names That Work for Any Child';
+const title = 'Unisex Baby Names — Gender-Neutral & Modern';
 const description =
-  'Discover stylish unisex and gender-neutral baby names with meanings and origins. Perfect for parents looking for modern, flexible name choices.';
+  'Discover unisex and gender-neutral baby names with meanings and origins. Modern, flexible name choices for any child — filter by origin, letter or meaning.';
 ---
 
 <BaseLayout title={title} description={description}>

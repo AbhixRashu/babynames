@@ -1,7 +1,41 @@
 import type { BabyName } from './types';
-import rawNames from '../data/names.json';
+import type { Rashi } from './rashi';
+import { RASHI_OPTIONS } from './rashi';
+import hinduNames from '../data/hindu-names.json';
+import muslimNames from '../data/muslim-names.json';
+import christianNames from '../data/christian-names.json';
+import sikhNames from '../data/sikh-names.json';
+import westernNames from '../data/western-names.json';
+import otherNames from '../data/other-names.json';
 
-export const NAMES: BabyName[] = rawNames as BabyName[];
+export const NAMES: BabyName[] = [
+  ...(hinduNames as BabyName[]),
+  ...(muslimNames as BabyName[]),
+  ...(christianNames as BabyName[]),
+  ...(sikhNames as BabyName[]),
+  ...(westernNames as BabyName[]),
+  ...(otherNames as BabyName[]),
+];
+
+export const RASHIS = ['All rashis', ...RASHI_OPTIONS.map((r) => r.label)] as const;
+
+export const MUSLIM_CATEGORIES = [
+  'All categories',
+  'Names of Allah',
+  'Prophet Names',
+  'Quranic Names',
+  'Arabic Meaning',
+] as const;
+
+export const VIBES = [
+  'Modern',
+  'Classic/Traditional',
+  'Popular',
+  'Unique/Rare',
+  'Royal/Elegant',
+  'Nature-inspired',
+  'Short & Simple',
+] as const;
 
 export const ORIGINS = [
   'All origins',
@@ -45,6 +79,9 @@ export interface FilterState {
   letter: string;
   query: string;
   style: string;
+  rashi: string;
+  category: string;
+  vibes: string[];
 }
 
 export const EMPTY_FILTER: FilterState = {
@@ -53,6 +90,9 @@ export const EMPTY_FILTER: FilterState = {
   letter: '',
   query: '',
   style: 'All styles',
+  rashi: 'All rashis',
+  category: 'All categories',
+  vibes: [],
 };
 
 export function filterNames(names: BabyName[], f: FilterState): BabyName[] {
@@ -62,12 +102,61 @@ export function filterNames(names: BabyName[], f: FilterState): BabyName[] {
     if (f.origin !== 'All origins' && n.origin !== f.origin) return false;
     if (f.style !== 'All styles' && n.style !== f.style) return false;
     if (f.letter && n.name.charAt(0).toUpperCase() !== f.letter) return false;
+    if (f.rashi !== 'All rashis' && n.rashi !== f.rashi) return false;
+    if (f.category !== 'All categories' && n.category !== f.category) return false;
+    if (f.vibes.length && !f.vibes.every((v) => n.vibes?.includes(v as never))) return false;
     if (q) {
       const hay = `${n.name} ${n.meaning} ${n.origin}`.toLowerCase();
       if (!q.split(/\s+/).every((word) => hay.includes(word))) return false;
     }
     return true;
   });
+}
+
+export function rashiLabel(rashi: string): string {
+  return RASHI_OPTIONS.find((r) => r.value === rashi)?.label ?? rashi;
+}
+
+export function rashiOf(name: BabyName): Rashi | undefined {
+  return name.rashi;
+}
+
+export interface FilterResult {
+  names: BabyName[];
+  total: number;
+  relaxed: string[];
+}
+
+const MIN_RESULTS = 12;
+
+export function matchWithFallback(names: BabyName[], f: FilterState, min = MIN_RESULTS): FilterResult {
+  const strict = filterNames(names, f);
+  if (strict.length >= min || !f.vibes.length && !f.letter && f.style === EMPTY_FILTER.style) {
+    return { names: strict, total: strict.length, relaxed: [] };
+  }
+
+  const relaxed: string[] = [];
+  const attempt = (partial: Partial<FilterState>): BabyName[] => {
+    return filterNames(names, { ...f, ...partial });
+  };
+
+  if (f.vibes.length) {
+    const n = attempt({ vibes: [] });
+    if (n.length >= min) return { names: n, total: strict.length, relaxed: ['vibe'] };
+    relaxed.push('vibe');
+  }
+  if (f.style !== EMPTY_FILTER.style) {
+    const n = attempt({ vibes: [], style: EMPTY_FILTER.style });
+    if (n.length >= min) return { names: n, total: strict.length, relaxed: [...relaxed, 'style'] };
+    relaxed.push('style');
+  }
+  if (f.letter) {
+    const n = attempt({ vibes: [], style: EMPTY_FILTER.style, letter: '' });
+    if (n.length >= min) return { names: n, total: strict.length, relaxed: [...relaxed, 'letter'] };
+    relaxed.push('letter');
+  }
+  const n = attempt({ vibes: [], style: EMPTY_FILTER.style, letter: '', rashi: EMPTY_FILTER.rashi, category: EMPTY_FILTER.category });
+  return { names: n, total: strict.length, relaxed: [...relaxed, 'filters'] };
 }
 
 export function shuffle<T>(arr: T[]): T[] {
