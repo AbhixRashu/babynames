@@ -1,0 +1,381 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Generator from '../components/Generator.astro';
+import Compatibility from '../components/Compatibility.astro';
+import { ORIGINS, NAMES } from '../lib/names';
+
+const title = 'Baby Names Generator — Free Modern Boy & Girl Baby Name Ideas';
+const description =
+  'Free baby names generator with meaning, origin and popularity. Search modern, unique, AI-assisted baby name ideas for boys and girls, check middle name, last name and sibling compatibility, and save your favourites. No sign-up, 100% private.';
+const keywords =
+  'baby names generator, modern baby name generator, how to choose a baby name, how to pick a baby name, baby name generator ai, baby name generator with last name, baby name generator using parents names, baby name generator free, baby name generator with middle name, unique baby name generator, boy baby name generator, girl baby name generator, baby name generator with siblings, baby name ideas girl';
+
+const popularThemes = ['Strength', 'Light', 'Wisdom', 'Grace', 'Peace', 'Hope', 'Joy', 'Love'];
+const origins = ORIGINS.filter((o) => o !== 'All origins').slice(0, 10);
+
+const totalNames = NAMES.length;
+
+const appSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Baby Names Generator',
+  url: 'https://babynames.salarypitcher.com',
+  applicationCategory: 'LifestyleApplication',
+  operatingSystem: 'Any',
+  description,
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  author: {
+    '@type': 'Organization',
+    name: 'Salary Pitcher Tools',
+    url: 'https://salarypitcher.com',
+  },
+};
+
+const faqItems = [
+  {
+    q: 'What baby names are illegal in the US?',
+    a: 'There is no single federal list of illegal baby names in the US, but many states reject names containing numbers, symbols or punctuation (like "A1" or "Ke$ha"). A few states also refuse obscene, offensive or clearly nonsensical names. In general, a name that is pronounceable, alphabetical and not vulgar is accepted by the Vital Records office in your state.',
+  },
+  {
+    q: 'What are good baby names?',
+    a: 'A good baby name is one you love saying, sounds great with your surname, and carries a meaning you are happy to pass on. Strong, well-loved examples include classics like William, James, Emma and Olivia, as well as modern picks like Arjun, Ayaan, Mia and Aria. Use our free baby names generator to search by meaning, origin or starting letter and shortlist the names that feel right.',
+  },
+  {
+    q: 'What are good baby girl names?',
+    a: 'Popular and beloved baby girl names include Olivia, Emma, Ava, Sophia, Isabella, Mia, Amelia, Grace, Aria and Charlotte. For something modern or unique, search our generator by meaning — themes like "light", "joy" and "grace" surface fresh and elegant girl names, complete with their origin and popularity rank.',
+  },
+  {
+    q: 'What is a baby names generator tool?',
+    a: 'A baby names generator is a tool that helps parents discover name ideas instantly. Instead of flicking through endless lists, you pick a gender, origin, starting letter and a meaning or theme, and the tool returns matching names with their meaning and popularity. This generator is free, runs entirely in your browser, and lets you save favourites and check name compatibility.',
+  },
+  {
+    q: 'What are baby names?',
+    a: 'Baby names are the given names chosen for a newborn child, usually a first name and often a middle name. They carry meaning, family tradition, religion or cultural heritage. Our tool lets you explore thousands of baby names by gender, origin, religion, starting letter and meaning, so you can find one that truly fits.',
+  },
+  {
+    q: 'Where can I find baby names?',
+    a: 'You can find baby names right here using our free baby names generator and our full boy, girl and unisex name lists. You can also find inspiration in baby name books, family history and cultural traditions. The generator makes it easy to filter by meaning, origin and letter so you can explore thousands of ideas in seconds.',
+  },
+  {
+    q: 'How to check numerology for baby names?',
+    a: 'To check numerology for a baby name, assign each letter a number (A=1, B=2 ... I=9, J=1, K=2 and so on), add all the values together, then reduce the total to a single digit. That digit is the name number, and numerologists interpret each number (1–9) with specific traits. While this generator focuses on meaning and origin, you can look up the numerological value of any shortlisted name once you have a favourite.',
+  },
+  {
+    q: 'How to call a baby boy with sweet names?',
+    a: 'Sweet names for a baby boy include cute nicknames like champ, prince, munchkin, honey, bubba, little man, sunny, teddy and pumpkin. Many parents combine a short form of the real name with a sweet nickname — for example "Juju", "Avi" or "Vivi". Once you pick a name from the generator, trying out a cute nickname is a lovely way to see if it sticks.',
+  },
+  {
+    q: 'How to choose baby names by astrology?',
+    a: 'To choose a baby name by astrology, most traditions start with the baby\'s birth details — date, time and place — to find their sun sign, moon sign (Rashi) and birth star (Nakshatra). Each Nakshatra is linked to specific syllables, and parents often pick a name beginning with one of those syllables. Our generator\'s origin and starting-letter filters make it easy to shortlist names that match the suggested syllable.',
+  },
+  {
+    q: 'What are some baby girl names?',
+    a: 'Beautiful baby girl names include Ava, Mia, Aria, Sofia, Isla, Maya, Zara, Grace, Emma, Olivia, Anaya, Kiara, Diya and Aaradhya. Whether you want a classic, modern or unique pick, search our generator by meaning — for example "light", "joy" or "grace" — to discover girl names that fit your style and culture.',
+  },
+  {
+    q: 'How to call a baby girl with sweet names?',
+    a: 'Sweet names for a baby girl include princess, angel, honey, sweetheart, munchkin, little star, buttercup, poppet, sunny and cupcake. Short forms of the chosen name also make adorable everyday nicknames, like "Mia-Mia", "Ava-Bear" or "Lulu". Pick your favourite from the generator and try a few nicknames out loud — the one that makes you smile is the keeper.',
+  },
+  {
+    q: 'What are new baby girl names?',
+    a: 'New and trending baby girl names often blend modern sounds with meaningful origins. Current favourites include Aria, Zara, Luna, Nova, Isla, Mila, Elara, Anaya, Kiara and Alana. Search the generator for a theme you love and sort through the results — newer, rarer names usually have a lower popularity rank, so you can spot rising gems instantly.',
+  },
+  {
+    q: 'How to find baby names?',
+    a: 'To find baby names, start broad: search by gender and origin, then narrow by starting letter and meaning. Save favourites to your shortlist as you go, and use the compatibility checker to test how each name flows with your surname or a sibling name. Between the generator, the full name lists and the similar-name suggestions, you will shortlist strong candidates quickly.',
+  },
+  {
+    q: 'What baby boy names start with J, A or V?',
+    a: 'Baby boy names starting with J include James, Jayden, Jai, Jacob, Justin and Joshua. Names starting with A include Aarav, Ayaan, Aditya, Aiden, Arjun and Adam. Names starting with V include Vivaan, Vihaan, Victor, Ved, Vihaan and Varun. Use the starting-letter filter in the generator to explore every J, A or V name with their meanings.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.a,
+    },
+  })),
+};
+---
+
+<BaseLayout title={title} description={description} keywords={keywords}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(appSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
+
+  <!-- HERO -->
+  <section class="pb-8 pt-4 sm:pt-8">
+    <div class="max-w-3xl">
+      <p class="eyebrow">Free · Private · In your browser</p>
+      <h1 class="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-[3.25rem]">
+        Baby Names Generator — find the perfect name with meaning & origin
+      </h1>
+      <p class="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
+        Use the free baby name generator to discover beautiful names for boys, girls and unisex. Filter {totalNames}+
+        names by origin, starting letter or meaning — save your favourites, check middle name and sibling compatibility,
+        and compare how they sound together. 100% free, no sign-up, nothing leaves your device.
+      </p>
+      <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-mute">
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          100,000+ names & meanings
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          Every origin & religion
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          Save favourites in your browser
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-center gap-2">
+      <span class="text-xs font-semibold uppercase tracking-wider text-mute">Popular:</span>
+      {popularThemes.map((t) => (
+        <a
+          href={`/search?q=${t}`}
+          class="chip"
+        >
+          {t}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- GENERATOR -->
+  <section id="generator" class="scroll-mt-24">
+    <Generator />
+  </section>
+
+  <!-- ORIGIN LINKS -->
+  <section class="mt-14">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Explore by origin</p>
+      <h2 class="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Names from every tradition</h2>
+    </div>
+    <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      {origins.map((o) => (
+        <a href={`/search?origin=${encodeURIComponent(o)}`} class="glass-card hoverable flex items-center gap-2.5 px-4 py-3.5">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style="background: var(--pink-soft)">
+            <span class="text-sm font-bold text-pink">{o.charAt(0)}</span>
+          </span>
+          <span class="text-sm font-semibold text-ink">{o}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- STYLE LINKS -->
+  <section class="mt-14">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Explore by style</p>
+      <h2 class="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">A name to match your vibe</h2>
+    </div>
+    <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      {['Classic', 'Modern', 'Old Fashioned', 'Trendy', 'Unique'].map((s) => (
+        <a href={`/search?style=${encodeURIComponent(s)}`} class="glass-card hoverable flex items-center gap-2.5 px-4 py-3.5">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style="background: var(--pink-soft)">
+            <span class="text-sm font-bold text-pink">{s.charAt(0)}</span>
+          </span>
+          <span class="text-sm font-semibold text-ink">{s}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- COMPATIBILITY -->
+  <section id="compatibility" class="mt-16 scroll-mt-24">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Fun extra</p>
+      <h2 class="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Baby name compatibility checker</h2>
+      <p class="mt-3 text-sm leading-relaxed text-ink-soft sm:text-base">
+        Type two names — sibling names, or a first + middle, or first + surname — and see how well they flow
+        together with a lighthearted score and breakdown.
+      </p>
+    </div>
+    <div class="mt-6">
+      <Compatibility />
+    </div>
+  </section>
+
+  <!-- QUICK LINKS -->
+  <section class="mt-16">
+    <div class="grid gap-4 sm:grid-cols-3">
+      <a href="/boy-names" class="glass-card hoverable p-6">
+        <span class="badge-gender badge-boy">Boy</span>
+        <h3 class="mt-3 text-lg font-bold text-ink">Boy names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Browse the full list of baby boy names and meanings.</p>
+      </a>
+      <a href="/girl-names" class="glass-card hoverable p-6">
+        <span class="badge-gender badge-girl">Girl</span>
+        <h3 class="mt-3 text-lg font-bold text-ink">Girl names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Browse the full list of baby girl names and meanings.</p>
+      </a>
+      <a href="/unisex-names" class="glass-card hoverable p-6">
+        <span class="badge-gender badge-unisex">Unisex</span>
+        <h3 class="mt-3 text-lg font-bold text-ink">Unisex names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Names that work beautifully for any child.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- SEO CONTENT -->
+  <section class="mt-20">
+    <article class="glass-card p-6 sm:p-10">
+      <div class="prose-s mx-auto max-w-3xl">
+        <h2>The free baby names generator that takes the stress out of naming</h2>
+        <p>
+          Choosing a name for your little one is one of the first big decisions you will make as a parent — and it can
+          feel overwhelming. There are so many options: classic names, modern names, unique baby name ideas, family
+          traditions and meanings that you want to carry forward. Our free baby names generator turns that wall of
+          choices into a quick, fun and genuinely useful search. Type a meaning, pick a starting letter, choose an
+          origin or religion, and instantly get a fresh batch of curated baby name ideas you would never have stumbled
+          on by flicking through a book.
+        </p>
+        <p>
+          The generator is deliberately simple. Choose whether you are looking for <a href="/boy-names">boy baby names</a>,{' '}
+          <a href="/girl-names">girl baby names</a> or <a href="/unisex-names">unisex names</a>, then refine by origin and
+          starting letter. Want something with a particular vibe? Type a theme like "strength", "light", "wisdom" or
+          "grace" and the tool matches names whose meanings fit. Every result shows the gender, the origin and its
+          popularity rank, so you can see at a glance whether a name is a timeless classic or a rising star.
+        </p>
+
+        <h2>A modern baby name generator built for real parents</h2>
+        <p>
+          A lot of naming tools are clunky spreadsheets in disguise. This is a modern baby name generator designed to
+          feel like it was made for you — fast, mobile friendly and completely free. It runs entirely in your browser,
+          which means no accounts, no spam, no selling your details, and no risk of someone else seeing your shortlist.
+          Everything is stored locally on your own device, and you can clear it whenever you like.
+        </p>
+        <p>
+          The modern approach extends to how you explore. Beyond simple filtering, tap any name card to open a detail
+          view with the full meaning, origin, gender and popularity — plus a list of similar names that share its
+          meaning, origin or starting letter. That makes it easy to branch out: find one name you love and instantly
+          discover a whole family of names in the same spirit.
+        </p>
+
+        <h2>How to choose a baby name you will love for a lifetime</h2>
+        <p>
+          If you are wondering how to choose a baby name, start with meaning. A name with a meaning you admire — courage,
+          wisdom, joy — adds depth from day one. Next, think about how it sounds. Say it out loud with your last name.
+          Write it down. Imagine calling it across a playground and saying it in a grown-up workplace. Good names work in
+          both worlds.
+        </p>
+        <ul>
+          <li><strong>Check the initials.</strong> Make sure they do not spell anything you would both regret.</li>
+          <li><strong>Try the nickname test.</strong> If you will shorten it, make sure you love the short form too.</li>
+          <li><strong>Consider popularity.</strong> Our generator shows the rank, so you can decide between a classic and a rarer pick.</li>
+          <li><strong>Use the compatibility checker.</strong> Test your top choice with the middle name, last name or a sibling name.</li>
+        </ul>
+
+        <h2>How to pick a baby name without second-guessing yourself</h2>
+        <p>
+          Knowing how to pick a baby name is mostly about narrowing down deliberately. Generate a shortlist of ten to
+          fifteen candidates, save your favourites, then delete ruthlessly. Our save-to-shortlist feature keeps
+          everything in one place, so you can come back after dinner, after a nap, after the excitement of telling
+          friends — and see which names still feel right. Trust your gut: if a name keeps floating back to the top of
+          your shortlist, that is usually your answer.
+        </p>
+
+        <h2>Baby name generator with last name, middle name and siblings</h2>
+        <p>
+          A first name never lives alone. It sits next to a middle name, a last name and often a sibling name. Our baby
+          name generator with last name and middle name support makes that easy with the built-in compatibility checker.
+          Type a first and middle name, a first name and surname, or two sibling names, and the tool scores how well they
+          flow together — rhythm, matching styles and whether the combination feels clunky or smooth. It is a playful
+          guide, not a verdict, but it surfaces clashes you might not notice on your own. Planning the next child? Use the
+          same checker as a baby name generator with siblings in mind, so your two children's names complement rather than
+          compete.
+        </p>
+
+        <h2>Baby name generator using parents' names</h2>
+        <p>
+          Many parents want the new name to nod to their own. While we cannot combine your two names into one word, our
+          search does something close: type a theme, an origin or even words from a family name and the generator returns
+          names that share that meaning or tradition. Between the origin filters (Hindu, Muslim, Christian, Sikh, Western,
+          Greek, Latin, Hebrew, Irish, Celtic and more) and the meaning search, you can easily land on a name that honours
+          both sides of the family.
+        </p>
+
+        <h2>Baby name generator AI: smarter suggestions, still private</h2>
+        <p>
+          Yes, there is a <strong>baby name generator AI</strong> flavour to how results are matched. Instead of random
+          picks, the tool scores candidates against your chosen meaning, origin, gender and starting letter, and surfaces
+          the strongest matches first. Shuffle a few times and you will notice how the suggestions stay on-theme rather
+          than wandering off. And because everything runs on your device, you get that "AI" smartness without your search
+          history leaving your browser.
+        </p>
+
+        <h2>A unique baby name generator for parents who want something different</h2>
+        <p>
+          If every classic list feels tired, the <strong>unique baby name generator</strong> side of this tool is for you.
+          Search by meaning to find less common interpretations, or wander through origins you have not explored yet —
+          Scandinavian, Hawaiian, Persian, Japanese, Celtic and more. The popularity rank on every card tells you how
+          unique a name really is, so you can pick a rare gem with confidence rather than guessing.
+        </p>
+
+        <h2>Boy baby name generator and girl baby name generator</h2>
+        <p>
+          Whether you are having a son or a daughter, the filters are built for you. Use the <strong>boy baby name
+          generator</strong> to find strong, gentle or classic names for a son, or the <strong>girl baby name generator</strong> to
+          discover elegant, cheerful or timeless names for a daughter. Both draw from the same rich database, and both
+          let you save favourites, compare compatibility and explore similar names. If you are keeping the gender a
+          surprise, the "All" and "Unisex" options let you shortlist both at once.
+        </p>
+
+        <h2>Baby name ideas girl: modern favourites and gentle classics</h2>
+        <p>
+          Looking for <strong>baby name ideas girl</strong>? Start with a theme you love. Searching "grace", "joy" or
+          "light" returns a lovely mix of modern and classic girl names with those meanings, and the rank shows which are
+          trending. Then test your top picks with your surname and any middle name using the compatibility checker, save
+          the ones that feel right, and let the shortlist do the remembering. From traditional favourites to rare modern
+          finds, the girl name list has ideas for every taste.
+        </p>
+
+        <h2>Why our free baby name generator is the one to bookmark</h2>
+        <p>
+          It is free forever, private by design, and genuinely useful — a combination that is rarer than it should be.
+          There is no sign-up wall, no credit card form and no data collection. You get real meanings, real origins,
+          real popularity data, and a real shortlist that lives on your phone, tablet or laptop. Bookmark the page, run
+          it during breakfast, and by the time you have tried a few themes and origins you will almost certainly have a
+          name — or three — that feel like home. Good luck, and happy naming!
+        </p>
+      </div>
+    </article>
+  </section>
+
+  <!-- FAQ SECTION -->
+  <section class="mt-16" aria-labelledby="faq-heading">
+    <div class="mx-auto max-w-3xl">
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faq-heading" class="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Baby names FAQ</h2>
+      <p class="mt-3 text-sm leading-relaxed text-ink-soft sm:text-base">
+        Quick answers to the most common questions about baby names, the generator and how to choose a name that fits.
+      </p>
+      <div class="mt-8 space-y-3">
+        {faqItems.map((item) => (
+          <details class="glass-card p-5 sm:p-6">
+            <summary class="cursor-pointer list-none text-base font-bold text-ink sm:text-lg">
+              <span class="flex items-center justify-between gap-4">
+                {item.q}
+                <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </span>
+            </summary>
+            <p class="prose-s mt-4 text-sm leading-relaxed text-ink-soft sm:text-[15px]">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

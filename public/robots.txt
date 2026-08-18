@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://babynames.salarypitcher.com/sitemap-index.xml

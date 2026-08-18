@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'About — BabyNames';
+const description =
+  'About the free baby name generator. A simple, private tool to find the perfect baby name with meanings and origins.';
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pb-8 pt-2 sm:pt-6">
+    <p class="eyebrow">About</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">About BabyNames</h1>
+    <div class="prose-s mt-6 max-w-3xl">
+      <p>
+        <strong>BabyNames</strong> is a free baby name generator built to help parents find a name they love —
+        with a meaning they can stand behind. We believe finding a baby name should feel joyful, not stressful,
+        so we built a tool that's fast, friendly and completely private.
+      </p>
+      <h2>What we offer</h2>
+      <ul>
+        <li>A searchable collection of <strong>hundreds of names</strong> across every major origin — Hindu, Muslim, Christian, Sikh, Western, Greek, Hebrew, Irish and more.</li>
+        <li>Filter by <strong>gender, religion/origin, starting letter</strong> or <strong>meaning</strong> (try "strength", "light" or "wisdom").</li>
+        <li>A personal <strong>shortlist</strong> so you can save favourites and compare them later.</li>
+        <li>A lighthearted <strong>compatibility checker</strong> to see how names sound together.</li>
+      </ul>
+      <h2>Your privacy</h2>
+      <p>
+        This tool runs <strong>100% in your browser</strong>. The name database is bundled with the site — there
+        is no server, no account, no tracking and no data collection. Your shortlist and theme preference are
+        stored only in your browser's local storage on your own device.
+      </p>
+      <h2>Free forever</h2>
+      <p>
+        BabyNames is free to use, with no ads and no sign-up. It's one of a family of free tools from Salary
+        Pitcher — including EpochTools, FontSizePro, CronTool and the online Ruler.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

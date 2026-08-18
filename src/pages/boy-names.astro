@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Generator from '../components/Generator.astro';
+import { NAMES } from '../lib/names';
+
+const boys = NAMES.filter((n) => n.gender === 'boy');
+const top = [...boys].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 5);
+
+const title = 'Baby Boy Names — Strong, Handsome & Unique Options';
+const description =
+  'Browse hundreds of baby boy names with meanings and origins. Filter by religion, starting letter or meaning — from Aarav to Zachary.';
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pb-8 pt-2 sm:pt-6">
+    <div class="max-w-3xl">
+      <span class="badge-gender badge-boy">Boy names</span>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Baby boy names with meanings</h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-soft">
+        Choosing a name for your baby boy is one of the most exciting decisions you'll make. Whether you're
+        looking for a classic strong name, a modern unique pick, or a meaningful name rooted in your faith or
+        culture, our collection has you covered. Filter by origin (Hindu, Muslim, Christian, Sikh and more),
+        starting letter or meaning — then tap the heart to save your favourites.
+      </p>
+      <div class="mt-5 flex flex-wrap items-center gap-2 text-xs font-medium text-mute">
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-blue" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          {boys.length}+ boy names
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-blue" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          Meanings & origins included
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-3 sm:grid-cols-5">
+      {top.map((n) => (
+        <div class="glass-card p-4">
+          <p class="text-base font-bold text-ink">{n.name}</p>
+          <p class="mt-1 text-xs leading-relaxed text-mute line-clamp-2">{n.meaning}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section id="generator" class="scroll-mt-24">
+    <Generator defaultGender="boy" />
+  </section>
+
+  <section class="mt-14">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Popular boy names by origin</h2>
+    </div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-3">
+      <a href="/search?origin=Hindu" class="glass-card hoverable p-6">
+        <h3 class="text-lg font-bold text-ink">Hindu boy names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Aarav, Vivaan, Advait — timeless Sanskrit names with deep spiritual meanings.</p>
+      </a>
+      <a href="/search?origin=Muslim" class="glass-card hoverable p-6">
+        <h3 class="text-lg font-bold text-ink">Muslim boy names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Muhammad, Zain, Hamza — beautiful names with strong Islamic heritage.</p>
+      </a>
+      <a href="/search?origin=Christian" class="glass-card hoverable p-6">
+        <h3 class="text-lg font-bold text-ink">Christian boy names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">David, Michael, Noah — classic biblical names loved for generations.</p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

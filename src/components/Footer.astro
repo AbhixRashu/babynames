@@ -1,0 +1,55 @@
+---
+import { SITE, OTHER_TOOLS } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-card/60">
+  <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3">
+    <div>
+      <div class="flex items-center gap-2.5">
+        <img src="/favicon.svg" alt="" width="28" height="28" class="h-7 w-7 rounded-[8px]" />
+        <span class="text-base font-bold tracking-tight text-ink">Baby<span class="text-pink">Names</span></span>
+      </div>
+      <p class="mt-3 max-w-xs text-sm leading-relaxed text-mute">
+        A free baby name generator with thousands of names across every origin. Search by gender, letter or
+        meaning — save your favourites and find the perfect name. 100% in your browser, no sign-up, no ads.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-xs font-bold uppercase tracking-widest text-mute">Explore</h3>
+      <ul class="mt-3 space-y-2 text-sm">
+        <li><a class="text-ink-soft transition-colors hover:text-pink" href="/">Name Generator</a></li>
+        <li><a class="text-ink-soft transition-colors hover:text-pink" href="/boy-names">Boy Names</a></li>
+        <li><a class="text-ink-soft transition-colors hover:text-pink" href="/girl-names">Girl Names</a></li>
+        <li><a class="text-ink-soft transition-colors hover:text-pink" href="/unisex-names">Unisex Names</a></li>
+        <li><a class="text-ink-soft transition-colors hover:text-pink" href="/shortlist">My Shortlist</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xs font-bold uppercase tracking-widest text-mute">More Free Tools</h3>
+      <ul class="mt-3 space-y-2 text-sm">
+        {OTHER_TOOLS.map((t) => (
+          <li>
+            <a class="text-ink-soft transition-colors hover:text-pink" href={t.url} rel="noopener">
+              {t.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-line">
+    <div class="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-mute sm:flex-row sm:px-6">
+      <p>© {year} {SITE.name}. Free to use — runs 100% in your browser.</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+        <a class="transition-colors hover:text-pink" href="/about">About</a>
+        <a class="transition-colors hover:text-pink" href="/contact">Contact</a>
+        <a class="transition-colors hover:text-pink" href="/privacy">Privacy Policy</a>
+        <a class="transition-colors hover:text-pink" href="/terms">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>

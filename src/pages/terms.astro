@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+
+const title = 'Terms of Service — BabyNames';
+const description =
+  'Terms of service for the free baby name generator. Free to use, no warranties implied.';
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pb-8 pt-2 sm:pt-6">
+    <p class="eyebrow">Terms</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Terms of Service</h1>
+    <div class="prose-s mt-6 max-w-3xl">
+      <p>Last updated: August 2026. By using {SITE.name}, you agree to these terms.</p>
+      <h2>1. Free use</h2>
+      <p>
+        {SITE.name} is provided free of charge for personal use. You may browse, search and save names to your
+        shortlist without creating an account.
+      </p>
+      <h2>2. No warranties</h2>
+      <p>
+        We provide name meanings and origins in good faith for inspiration, but meaning interpretations vary
+        across cultures and sources. The service is provided "as is" and "as available", without warranties of
+        any kind, express or implied.
+      </p>
+      <h2>3. Not professional advice</h2>
+      <p>
+        Name meanings, popularity ranks and the compatibility checker are provided for entertainment and
+        informational purposes only. They are not legal, religious or professional advice.
+      </p>
+      <h2>4. Acceptable use</h2>
+      <p>
+        You agree not to misuse the service, attempt to disrupt it, or use it to collect personal information
+        about other users.
+      </p>
+      <h2>5. Changes</h2>
+      <p>
+        We may update these terms from time to time. Continued use of the site after changes means you accept
+        the updated terms.
+      </p>
+      <h2>6. Contact</h2>
+      <p>
+        Questions about these terms can be directed via the contact details on salarypitcher.com.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

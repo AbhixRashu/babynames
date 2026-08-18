@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Generator from '../components/Generator.astro';
+
+const title = 'Baby Names — Search Results';
+const description =
+  'Search baby names by meaning, origin or starting letter. Free baby name finder that runs entirely in your browser.';
+
+// Read query params for initial filter hints (used as defaults in the generator)
+const url = new URL(Astro.url);
+const q = url.searchParams.get('q') ?? '';
+const origin = url.searchParams.get('origin') ?? '';
+const style = url.searchParams.get('style') ?? '';
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pb-8 pt-2 sm:pt-6">
+    <p class="eyebrow">Search</p>
+    <h1 data-search-title class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+      {q ? <>Baby names meaning “{q}”</> : origin ? <>Baby names from {origin}</> : style ? <>Baby names with a “{style}” style</> : 'Search baby names'}
+    </h1>
+    <p data-search-sub class="mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft sm:text-base">
+      {q
+        ? `Showing names whose meaning matches “${q}”. Use the meaning box below to refine further.`
+        : origin
+          ? `Showing names with ${origin} origin. Use the filters below to narrow it down.`
+          : style
+            ? `Showing names with a ${style} feel. Use the filters below to narrow it down.`
+            : 'Filter by meaning, origin, gender or starting letter to find the perfect name.'}
+    </p>
+  </section>
+
+  <Generator defaultOrigin={origin || 'All origins'} defaultQuery={q} defaultStyle={style || 'All styles'} />
+
+  <script is:inline>
+    const p = new URLSearchParams(window.location.search);
+    const q = p.get('q');
+    const origin = p.get('origin');
+    const style = p.get('style');
+    const title = document.querySelector('[data-search-title]');
+    const sub = document.querySelector('[data-search-sub]');
+    if (title) {
+      if (q) title.textContent = `Baby names meaning “${q}”`;
+      else if (origin) title.textContent = `Baby names from ${origin}`;
+      else if (style) title.textContent = `Baby names with a “${style}” style`;
+    }
+    if (sub) {
+      if (q) sub.textContent = `Showing names whose meaning matches “${q}”. Use the meaning box below to refine further.`;
+      else if (origin) sub.textContent = `Showing names with ${origin} origin. Use the filters below to narrow it down.`;
+      else if (style) sub.textContent = `Showing names with a ${style} feel. Use the filters below to narrow it down.`;
+    }
+  </script>
+
+  {q && (
+    <div class="mt-6">
+      <p class="text-sm font-semibold text-ink">Popular meanings to try</p>
+      <div class="mt-2 flex flex-wrap gap-2">
+        {['strength', 'light', 'wisdom', 'grace', 'peace', 'love', 'hope', 'joy', 'victory', 'star', 'flower', 'ocean'].map((m) => (
+          <a href={`/search?q=${m}`} class="chip">{m}</a>
+        ))}
+      </div>
+    </div>
+  )}
+</BaseLayout>

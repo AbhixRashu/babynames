@@ -1,0 +1,31 @@
+<div class="glass-card p-5 sm:p-7">
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label class="field-label" for="comp-a">First name</label>
+      <input id="comp-a" type="text" class="input mt-2" placeholder="e.g. Aarav" data-comp-a autocomplete="off" />
+    </div>
+    <div>
+      <label class="field-label" for="comp-b">Second name</label>
+      <input id="comp-b" type="text" class="input mt-2" placeholder="e.g. Mira" data-comp-b autocomplete="off" />
+    </div>
+  </div>
+
+  <div class="mt-5 flex flex-wrap items-center gap-3">
+    <button type="button" data-comp-check class="btn btn-blue px-7 py-3 text-sm">
+      <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m12 3 2.7 5.5 6.3.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.4l6.3-.9L12 3Z" />
+      </svg>
+      Check compatibility
+    </button>
+    <p class="text-xs text-mute">Sibling names · first + middle · first + surname</p>
+  </div>
+
+  <div data-comp-result class="mt-6 hidden"></div>
+</div>
+
+<script>
+  import { mountCompatibility } from '../scripts/compatibility';
+  const input = document.querySelector<HTMLElement>('[data-comp-a]');
+  const root = input?.closest<HTMLElement>('.glass-card') ?? null;
+  if (root) mountCompatibility(root);
+</script>

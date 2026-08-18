@@ -1,0 +1,111 @@
+---
+import '../styles/global.css';
+import { SITE, ORGANIZATION } from '../consts';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SITE.description,
+  keywords,
+  image = SITE.ogImage,
+  type = 'website',
+  noindex = false,
+} = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const canonical = new URL(path, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const fullTitle = title === SITE.name ? title : `${title} | ${SITE.name}`;
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: ORGANIZATION.name,
+  alternateName: SITE.name,
+  url: ORGANIZATION.url,
+  sameAs: [
+    'https://babynames.salarypitcher.com',
+    'https://salarypitcher.com',
+    'https://epochtools.salarypitcher.com',
+    'https://fontsizepro.salarypitcher.com',
+    'https://crontool.salarypitcher.com',
+    'https://ruler.salarypitcher.com',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+    <meta name="author" content={SITE.name} />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content={SITE.themeColor} />
+    <meta name="color-scheme" content="light dark" />
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={fullTitle} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={fullTitle} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+
+    <script is:inline>
+      (function () {
+        var key = 'babynames.theme';
+        var saved = null;
+        try { saved = localStorage.getItem(key); } catch (e) {}
+        var dark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body class="relative flex min-h-screen flex-col">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main-content" class="mx-auto w-full max-w-6xl flex-1 px-4 pb-24 pt-8 sm:px-6 sm:pt-12">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import { initTheme } from '../scripts/theme';
+      initTheme();
+    </script>
+  </body>
+</html>

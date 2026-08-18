@@ -1,0 +1,139 @@
+---
+interface Props {
+  defaultGender?: 'all' | 'boy' | 'girl' | 'unisex';
+  defaultOrigin?: string;
+  defaultQuery?: string;
+  defaultStyle?: string;
+}
+
+const {
+  defaultGender = 'all',
+  defaultOrigin = 'All origins',
+  defaultQuery = '',
+  defaultStyle = 'All styles',
+} = Astro.props;
+
+const genders = [
+  { value: 'all', label: 'All' },
+  { value: 'boy', label: 'Boy' },
+  { value: 'girl', label: 'Girl' },
+  { value: 'unisex', label: 'Unisex' },
+];
+---
+<div
+  data-generator-root
+  data-default-gender={defaultGender}
+  data-default-origin={defaultOrigin}
+  data-default-query={defaultQuery}
+  data-default-style={defaultStyle}
+  class="glass-card p-5 sm:p-7"
+>
+  <div class="flex flex-col gap-5">
+    <div>
+      <span class="field-label">Gender</span>
+      <div class="mt-2 flex flex-wrap gap-2">
+        {genders.map((g) => (
+          <button
+            type="button"
+            data-gender={g.value}
+            class:list={['chip', defaultGender === g.value && 'active']}
+            aria-pressed={defaultGender === g.value}
+          >
+            {g.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <label class="field-label" for="origin-select">Origin / Religion</label>
+        <select id="origin-select" class="select mt-2" data-origin></select>
+      </div>
+      <div>
+        <label class="field-label" for="letter-select">Starting letter</label>
+        <select id="letter-select" class="select mt-2" data-letter>
+          <option value="">Any letter</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <label class="field-label" for="style-select">Name style</label>
+        <select id="style-select" class="select mt-2" data-style></select>
+      </div>
+      <div>
+        <label class="field-label" for="meaning-query">Meaning or theme</label>
+        <input
+          id="meaning-query"
+          type="text"
+          class="input mt-2"
+          placeholder='e.g. "strength", "light", "wisdom"'
+          value={defaultQuery}
+          data-query
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <button type="button" data-generate class="btn btn-pink px-7 py-3 text-sm">
+        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3a9 9 0 1 0 9 9" />
+          <path d="M21 3v6h-6" />
+        </svg>
+        Generate Names
+      </button>
+      <button type="button" data-shuffle class="btn btn-ghost px-6 py-3 text-sm">
+        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
+        </svg>
+        Shuffle More
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-6 border-t border-line pt-5">
+    <div class="mb-3 flex items-center justify-between">
+      <p class="text-sm font-semibold text-ink" data-count></p>
+      <p class="text-xs text-mute">Tap a name for details</p>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-results></div>
+    <div data-empty class="rounded-2xl border border-dashed border-line-strong p-8 text-center" hidden>
+      <p class="text-base font-semibold text-ink">No names match those filters</p>
+      <p class="mx-auto mt-1 max-w-sm text-sm text-mute">Try loosening the gender, origin or letter filter — or clear the meaning search.</p>
+      <button type="button" data-clear-filters class="btn btn-ghost mt-4 px-5 py-2 text-sm">Clear filters</button>
+    </div>
+  </div>
+
+  <div data-modal class="modal-backdrop" hidden role="dialog" aria-modal="true">
+    <div data-modal-panel class="modal-panel"></div>
+  </div>
+</div>
+
+<script>
+  import { mountGenerator } from '../scripts/generator';
+
+  const root = document.querySelector<HTMLElement>('[data-generator-root]');
+  if (root) {
+    const params = new URLSearchParams(window.location.search);
+    mountGenerator({
+      root,
+      defaultGender: (params.get('gender') || root.dataset.defaultGender || 'all') as 'all' | 'boy' | 'girl' | 'unisex',
+      defaultOrigin: params.get('origin') || root.dataset.defaultOrigin || 'All origins',
+      defaultQuery: params.get('q') || root.dataset.defaultQuery || '',
+      defaultStyle: params.get('style') || root.dataset.defaultStyle || 'All styles',
+    });
+  }
+
+  const emptyClear = document.querySelector('[data-clear-filters]');
+  emptyClear?.addEventListener('click', () => {
+    const inputs = root?.querySelectorAll<HTMLInputElement>('input[data-query]');
+    inputs?.forEach((i) => (i.value = ''));
+    const selects = root?.querySelectorAll<HTMLSelectElement>('select');
+    selects?.forEach((s) => (s.value = ''));
+    const allChip = root?.querySelector<HTMLButtonElement>('[data-gender="all"]');
+    allChip?.click();
+  });
+</script>

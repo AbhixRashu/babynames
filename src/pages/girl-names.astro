@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Generator from '../components/Generator.astro';
+import { NAMES } from '../lib/names';
+
+const girls = NAMES.filter((n) => n.gender === 'girl');
+const top = [...girls].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 5);
+
+const title = 'Baby Girl Names — Beautiful, Elegant & Meaningful';
+const description =
+  'Browse hundreds of baby girl names with meanings and origins. Filter by religion, starting letter or meaning — from Aaradhya to Zoe.';
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pb-8 pt-2 sm:pt-6">
+    <div class="max-w-3xl">
+      <span class="badge-gender badge-girl">Girl names</span>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Baby girl names with meanings</h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-soft">
+        Every little girl deserves a name as special as she is. From classic elegant names to modern favourites
+        and beautiful names rooted in faith and culture, our collection spans every origin. Search by meaning —
+        like light, grace or joy — filter by religion and starting letter, and save the ones you love to your
+        shortlist.
+      </p>
+      <div class="mt-5 flex flex-wrap items-center gap-2 text-xs font-medium text-mute">
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          {girls.length}+ girl names
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          Meanings & origins included
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-3 sm:grid-cols-5">
+      {top.map((n) => (
+        <div class="glass-card p-4">
+          <p class="text-base font-bold text-ink">{n.name}</p>
+          <p class="mt-1 text-xs leading-relaxed text-mute line-clamp-2">{n.meaning}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section id="generator" class="scroll-mt-24">
+    <Generator defaultGender="girl" />
+  </section>
+
+  <section class="mt-14">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Popular girl names by origin</h2>
+    </div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-3">
+      <a href="/search?origin=Hindu" class="glass-card hoverable p-6">
+        <h3 class="text-lg font-bold text-ink">Hindu girl names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Aaradhya, Ananya, Myra — graceful Sanskrit names that feel modern.</p>
+      </a>
+      <a href="/search?origin=Muslim" class="glass-card hoverable p-6">
+        <h3 class="text-lg font-bold text-ink">Muslim girl names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Aaliyah, Fatima, Zainab — elegant names with rich Islamic meaning.</p>
+      </a>
+      <a href="/search?origin=Western" class="glass-card hoverable p-6">
+        <h3 class="text-lg font-bold text-ink">Western girl names</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Amelia, Charlotte, Evelyn — beloved names with timeless charm.</p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

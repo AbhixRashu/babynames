@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+
+const title = 'Privacy Policy — BabyNames';
+const description =
+  'Privacy policy for the free baby name generator. Your data stays on your device — no tracking, no collection, no cookies for ads.';
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pb-8 pt-2 sm:pt-6">
+    <p class="eyebrow">Privacy</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Privacy Policy</h1>
+    <div class="prose-s mt-6 max-w-3xl">
+      <p>
+        Last updated: August 2026. This privacy policy explains how {SITE.name} handles your information.
+        The short version: <strong>we don't collect anything.</strong>
+      </p>
+      <h2>1. No data collection</h2>
+      <p>
+        {SITE.name} is a static website that runs entirely in your browser. There is no backend server, no
+        database and no analytics software. We do not collect, store or transmit any personal data.
+      </p>
+      <h2>2. Local storage</h2>
+      <p>
+        Two pieces of information are stored in your browser's local storage, and nothing more:
+      </p>
+      <ul>
+        <li><strong>Your shortlist</strong> — the names you've saved with the heart button.</li>
+        <li><strong>Your theme preference</strong> — whether you use light or dark mode.</li>
+      </ul>
+      <p>
+        This data never leaves your device. Clearing your browser storage (or visiting in a private window)
+        will remove it. We cannot see or access it.
+      </p>
+      <h2>3. Cookies</h2>
+      <p>
+        We do not use tracking cookies, advertising cookies or third-party cookies of any kind.
+      </p>
+      <h2>4. Hosting</h2>
+      <p>
+        The site is served by Cloudflare. Standard server logs may record basic technical information such as
+        the page requested and an IP address, as is typical for any website hosting. We do not use this
+        information to identify or profile visitors.
+      </p>
+      <h2>5. Third-party links</h2>
+      <p>
+        Our footer links to other free tools. Those sites have their own privacy policies, which we encourage
+        you to review.
+      </p>
+      <h2>6. Children's privacy</h2>
+      <p>
+        {SITE.name} is a general-purpose tool and does not collect personal information from anyone, including
+        children.
+      </p>
+      <h2>7. Contact</h2>
+      <p>
+        If you have questions about this policy, please use the contact details on salarypitcher.com.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

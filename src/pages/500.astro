@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Server Error';
+const description = 'Something went wrong on our side. Please try again.';
+---
+
+<BaseLayout title={title} description={description} noindex>
+  <section class="flex min-h-[50vh] flex-col items-center justify-center py-16 text-center">
+    <p class="eyebrow">500</p>
+    <h1 class="mt-4 text-4xl font-bold tracking-tight text-ink sm:text-5xl">Something went wrong on our side</h1>
+    <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink-soft">
+      An unexpected error occurred while loading this page. Please try again in a moment — your saved
+      names are still safe in your browser.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href="/" class="btn btn-pink px-7 py-3 text-sm">Back to the generator</a>
+      <a href="/shortlist" class="btn btn-ghost px-6 py-3 text-sm">My shortlist</a>
+    </div>
+  </section>
+</BaseLayout>
