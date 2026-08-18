@@ -3,9 +3,10 @@ const links = [
   { href: '/', label: 'Generator' },
   { href: '/boy-names', label: 'Boy Names' },
   { href: '/girl-names', label: 'Girl Names' },
-  { href: '/unisex-names', label: 'Unisex Names' },
-  { href: '/shortlist', label: 'My Shortlist' },
-  { href: '/about', label: 'About' },
+  { href: '/unisex-names', label: 'Unisex' },
+  { href: '/names/origin', label: 'Origin' },
+  { href: '/names/meaning', label: 'Meaning' },
+  { href: '/trending-baby-names-2026', label: 'Trending' },
 ];
 const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (href: string) => current === href;
@@ -18,7 +19,7 @@ const isActive = (href: string) => current === href;
       <span class="text-lg font-bold tracking-tight text-ink">Baby<span class="text-pink">Names</span></span>
     </a>
 
-    <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Primary">
       {links.map((l) => (
         <a
           href={l.href}
@@ -53,7 +54,7 @@ const isActive = (href: string) => current === href;
         Shortlist
       </a>
 
-      <details class="relative md:hidden" id="mobile-menu">
+      <details class="relative lg:hidden" id="mobile-menu">
         <summary class="btn btn-ghost h-10 w-10 cursor-pointer list-none [&::-webkit-details-marker]:hidden" aria-label="Toggle menu">
           <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M4 7h16M4 12h16M4 17h16" />

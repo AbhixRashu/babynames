@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { SITE, ORGANIZATION } from '../consts';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import interLatinUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -49,6 +50,7 @@ const orgSchema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href={interLatinUrl} as="font" type="font/woff2" crossorigin="anonymous" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     {keywords && <meta name="keywords" content={keywords} />}

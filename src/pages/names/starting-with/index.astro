@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import { LETTERS } from '../../../lib/names';
+import { namesByLetter, byRank, HOME_CRUMB } from '../../../lib/seo';
+
+const letters = LETTERS.map((l) => {
+  const all = namesByLetter(l);
+  return {
+    letter: l,
+    count: all.length,
+    samples: byRank(all, 3).map((n) => n.name),
+  };
+});
+
+const title = 'Baby Names by Letter — A to Z Names with Meanings';
+const description =
+  'Browse baby names by starting letter from A to Z. Every letter page lists hundreds of boy, girl and unisex names with meanings and origins — free.';
+
+const crumbs = [HOME_CRUMB, { label: 'Names by Letter', href: '/names/starting-with' }];
+---
+
+<BaseLayout title={title} description={description}>
+  <Breadcrumbs crumbs={crumbs} />
+  <section class="pb-8 pt-2 sm:pt-6">
+    <div class="max-w-3xl">
+      <span class="badge-gender badge-boy">Browse by letter</span>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Baby names by starting letter</h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-soft">
+        Sometimes you already know the first letter you want — for a family tradition, a favourite initial or simply because a
+        particular sound appeals to you. Choose a letter below to explore every name beginning with it, complete with meaning,
+        origin and gender. With thousands of curated names across Hindu, Muslim, Christian, Sikh, Western, Greek, Latin, Hebrew
+        and more traditions, there is a perfect starting letter waiting for your little one.
+      </p>
+      <p class="mt-3 text-base leading-relaxed text-ink-soft">
+        Each letter page is sorted by popularity, so you will spot the classics and the rising stars instantly. When you find a
+        few favourites, open the free baby names generator, set the starting letter, and combine it with an origin, rashi or a
+        meaning you love to narrow the list down in seconds.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Choose a starting letter</h2>
+    <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {letters.map((l) => (
+        <a href={`/names/starting-with/${l.letter.toLowerCase()}`} class="glass-card hoverable flex items-center gap-4 p-5">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-xl font-bold text-pink" style="background: var(--pink-soft)">
+            {l.letter}
+          </span>
+          <span>
+            <span class="block text-base font-bold text-ink">{l.letter}-names</span>
+            <span class="mt-0.5 block text-xs text-mute">
+              {l.count}+ names · {l.samples.join(', ')}
+            </span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">More ways to explore names</h2>
+    </div>
+    <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <a href="/boy-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">All baby boy names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Strong, classic and unique boy names with meanings.</p>
+      </a>
+      <a href="/girl-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">All baby girl names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Beautiful girl names from every tradition.</p>
+      </a>
+      <a href="/names/origin" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by origin</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Browse Hindu, Muslim, Christian, Greek and more.</p>
+      </a>
+      <a href="/names/meaning" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by meaning</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Find names meaning love, light, strength and more.</p>
+      </a>
+      <a href="/trending-baby-names-2026" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Trending names 2026</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">The most popular names parents are choosing this year.</p>
+      </a>
+      <a href="/" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Baby name generator</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Filter every name by letter, origin, meaning and more.</p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

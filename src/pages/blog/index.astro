@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { POSTS } from '../../data/blog';
+import { HOME_CRUMB } from '../../lib/seo';
+
+const title = 'Baby Name Blog — Guides, Trends & Ideas';
+const description =
+  'Guides and ideas for choosing a baby name: unique names for 2026, how to choose the perfect name, trending names, world names and zodiac names — free.';
+
+const crumbs = [HOME_CRUMB, { label: 'Blog', href: '/blog' }];
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pb-8 pt-2 sm:pt-6">
+    <Breadcrumbs crumbs={crumbs} />
+    <div class="max-w-3xl">
+      <span class="badge-gender badge-unisex">Blog</span>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">The baby name blog</h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-soft">
+        Practical guides, name trends and fresh ideas to help you find the perfect name — from unique picks for
+        2026 to names from cultures around the world and names matched to the zodiac.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {POSTS.map((p) => (
+        <a href={`/blog/${p.slug}`} class="glass-card hoverable flex flex-col p-6">
+          <span class="text-xs font-semibold uppercase tracking-wider text-mute">
+            {p.pubDate} · {p.readingMinutes} min read
+          </span>
+          <h2 class="mt-3 text-lg font-bold leading-snug text-ink">{p.title}</h2>
+          <p class="mt-2 text-sm leading-relaxed text-ink-soft">{p.description}</p>
+          <span class="mt-4 text-sm font-semibold text-pink">Read article →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Put the guides into practice</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">
+        Reading is a great start — browsing is better. Jump into the generator and try out everything you have
+        learned.
+      </p>
+    </div>
+    <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <a href="/" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Baby name generator</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Filter thousands of names by gender, origin, letter and meaning.</p>
+      </a>
+      <a href="/names/meaning" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by meaning</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Find names meaning love, strength, light and more.</p>
+      </a>
+      <a href="/trending-baby-names-2026" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Trending names 2026</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">See the most popular names parents are choosing this year.</p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

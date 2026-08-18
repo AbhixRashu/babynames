@@ -2,7 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Generator from '../components/Generator.astro';
 import Compatibility from '../components/Compatibility.astro';
-import { ORIGINS, NAMES } from '../lib/names';
+import { NAMES, LETTERS } from '../lib/names';
+import { THEMES, byRank, ORIGINS_IN_DATA } from '../lib/seo';
 
 const title = 'Free Baby Name Generator — Find the Perfect Name';
 const description =
@@ -10,17 +11,40 @@ const description =
 const keywords =
   'baby names generator, modern baby name generator, how to choose a baby name, how to pick a baby name, baby name generator ai, baby name generator with last name, baby name generator using parents names, baby name generator free, baby name generator with middle name, unique baby name generator, boy baby name generator, girl baby name generator, baby name generator with siblings, baby name ideas girl';
 
-const popularThemes = ['Strength', 'Light', 'Wisdom', 'Grace', 'Peace', 'Hope', 'Joy', 'Love'];
-const origins = ORIGINS.filter((o) => o !== 'All origins').slice(0, 10);
+const themeChips = THEMES.filter((t) =>
+  ['strength', 'light', 'wisdom', 'grace', 'peace', 'love', 'happiness', 'hope'].includes(t.slug),
+);
+const origins = ORIGINS_IN_DATA.slice(0, 10);
+const letterStats = LETTERS.map((l) => ({
+  letter: l,
+  count: NAMES.filter((n) => n.name.charAt(0).toUpperCase() === l).length,
+}));
+const trendingPicks = byRank(NAMES, 8);
 
 const totalNames = NAMES.length;
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Baby Names Generator',
+  alternateName: 'BabyNames',
+  url: 'https://babynames.salarypitcher.com',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://babynames.salarypitcher.com/search?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
 
 const appSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Baby Names Generator',
   url: 'https://babynames.salarypitcher.com',
-  applicationCategory: 'LifestyleApplication',
+  applicationCategory: 'UtilityApplication',
   operatingSystem: 'Any',
   description,
   offers: {
@@ -109,6 +133,7 @@ const faqSchema = {
 ---
 
 <BaseLayout title={title} description={description} keywords={keywords}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(websiteSchema)} />
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(appSchema)} />
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
 
@@ -142,12 +167,12 @@ const faqSchema = {
 
     <div class="mt-8 flex flex-wrap items-center gap-2">
       <span class="text-xs font-semibold uppercase tracking-wider text-mute">Popular:</span>
-      {popularThemes.map((t) => (
+      {themeChips.map((t) => (
         <a
-          href={`/search?q=${t}`}
+          href={`/names/meaning/${t.slug}`}
           class="chip"
         >
-          {t}
+          {t.label}
         </a>
       ))}
     </div>
@@ -166,7 +191,7 @@ const faqSchema = {
     </div>
     <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
       {origins.map((o) => (
-        <a href={`/search?origin=${encodeURIComponent(o)}`} class="glass-card hoverable flex items-center gap-2.5 px-4 py-3.5">
+        <a href={`/names/origin/${o.toLowerCase()}`} class="glass-card hoverable flex items-center gap-2.5 px-4 py-3.5">
           <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style="background: var(--pink-soft)">
             <span class="text-sm font-bold text-pink">{o.charAt(0)}</span>
           </span>
@@ -190,6 +215,67 @@ const faqSchema = {
           </span>
           <span class="text-sm font-semibold text-ink">{s}</span>
         </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- BROWSE BY LETTER -->
+  <section class="mt-16">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Browse by letter</p>
+        <h2 class="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Baby names A to Z</h2>
+      </div>
+      <a href="/names/starting-with" class="text-sm font-semibold text-pink hover:text-pink-strong">All letters →</a>
+    </div>
+    <div class="mt-6 grid grid-cols-7 gap-2 sm:grid-cols-9 md:grid-cols-11 lg:grid-cols-13">
+      {letterStats.map((l) => (
+        <a
+          href={`/names/starting-with/${l.letter.toLowerCase()}`}
+          class="glass-card hoverable flex flex-col items-center rounded-xl px-1 py-2.5 text-center"
+        >
+          <span class="text-base font-bold text-ink">{l.letter}</span>
+          <span class="text-[10px] font-medium text-mute">{l.count}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- BROWSE BY MEANING -->
+  <section class="mt-16">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Browse by meaning</p>
+        <h2 class="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">A name with a beautiful meaning</h2>
+      </div>
+      <a href="/names/meaning" class="text-sm font-semibold text-pink hover:text-pink-strong">All meanings →</a>
+    </div>
+    <div class="mt-6 flex flex-wrap gap-2">
+      {THEMES.map((t) => (
+        <a href={`/names/meaning/${t.slug}`} class="chip">{t.label}</a>
+      ))}
+    </div>
+  </section>
+
+  <!-- TRENDING -->
+  <section class="mt-16">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Popular this year</p>
+        <h2 class="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Trending baby names 2026</h2>
+        <p class="mt-3 text-sm leading-relaxed text-ink-soft sm:text-base">
+          The most popular names parents are choosing right now, with meanings and origins included.
+        </p>
+      </div>
+      <a href="/trending-baby-names-2026" class="text-sm font-semibold text-pink hover:text-pink-strong">Full ranking →</a>
+    </div>
+    <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {trendingPicks.map((n) => (
+        <div class="glass-card p-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-mute">{n.gender}</span>
+          <p class="mt-1 text-lg font-bold text-ink">{n.name}</p>
+          <p class="mt-1 text-xs leading-relaxed text-mute line-clamp-2">{n.meaning}</p>
+        </div>
       ))}
     </div>
   </section>

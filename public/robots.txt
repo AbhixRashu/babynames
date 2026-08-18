@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /shortlist
+Disallow: /*?*
 
 Sitemap: https://babynames.salarypitcher.com/sitemap-index.xml

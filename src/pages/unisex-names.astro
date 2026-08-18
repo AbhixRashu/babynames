@@ -1,18 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Generator from '../components/Generator.astro';
 import { NAMES } from '../lib/names';
+import { itemListSchema, HOME_CRUMB } from '../lib/seo';
 
 const unisex = NAMES.filter((n) => n.gender === 'unisex');
-const top = [...unisex].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 5);
+const top = [...unisex].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 20);
 
 const title = 'Unisex Baby Names — Gender-Neutral & Modern';
 const description =
   'Discover unisex and gender-neutral baby names with meanings and origins. Modern, flexible name choices for any child — filter by origin, letter or meaning.';
+
+const crumbs = [HOME_CRUMB, { label: 'Unisex Names', href: '/unisex-names' }];
+const listSchema = itemListSchema(top);
 ---
 
 <BaseLayout title={title} description={description}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(listSchema)} />
   <section class="pb-8 pt-2 sm:pt-6">
+    <Breadcrumbs crumbs={crumbs} />
     <div class="max-w-3xl">
       <span class="badge-gender badge-unisex">Unisex names</span>
       <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Unisex baby names with meanings</h1>
@@ -35,7 +42,7 @@ const description =
     </div>
 
     <div class="mt-6 grid gap-3 sm:grid-cols-5">
-      {top.map((n) => (
+      {top.slice(0, 5).map((n) => (
         <div class="glass-card p-4">
           <p class="text-base font-bold text-ink">{n.name}</p>
           <p class="mt-1 text-xs leading-relaxed text-mute line-clamp-2">{n.meaning}</p>
@@ -59,6 +66,41 @@ const description =
           path they choose in life.
         </p>
       </div>
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Explore more unisex names</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">
+        Browse unisex names by starting letter, origin or meaning, and see what is trending this year.
+      </p>
+    </div>
+    <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <a href="/names/starting-with" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by letter</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Jump to any starting letter from A to Z.</p>
+      </a>
+      <a href="/names/origin" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by origin</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Hindu, Muslim, Christian, Greek and many more traditions.</p>
+      </a>
+      <a href="/names/meaning" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by meaning</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Names meaning light, peace, love, nature and more.</p>
+      </a>
+      <a href="/trending-baby-names-2026" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Trending names 2026</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">The most popular names parents are choosing this year.</p>
+      </a>
+      <a href="/boy-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Baby boy names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Strong, classic and unique boy names with meanings.</p>
+      </a>
+      <a href="/girl-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Baby girl names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Beautiful girl names with meanings and origins.</p>
+      </a>
     </div>
   </section>
 </BaseLayout>

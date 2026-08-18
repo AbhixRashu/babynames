@@ -1,18 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Generator from '../components/Generator.astro';
 import { NAMES } from '../lib/names';
+import { itemListSchema, HOME_CRUMB } from '../lib/seo';
 
 const boys = NAMES.filter((n) => n.gender === 'boy');
-const top = [...boys].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 5);
+const top = [...boys].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)).slice(0, 20);
 
 const title = 'Baby Boy Names — Strong, Unique & Handsome';
 const description =
   'Browse hundreds of baby boy names with meanings and origins. Filter by religion, letter or meaning to find a strong, classic or unique name for your son.';
+
+const crumbs = [HOME_CRUMB, { label: 'Boy Names', href: '/boy-names' }];
+const listSchema = itemListSchema(top);
 ---
 
 <BaseLayout title={title} description={description}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(listSchema)} />
   <section class="pb-8 pt-2 sm:pt-6">
+    <Breadcrumbs crumbs={crumbs} />
     <div class="max-w-3xl">
       <span class="badge-gender badge-boy">Boy names</span>
       <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Baby boy names with meanings</h1>
@@ -35,7 +42,7 @@ const description =
     </div>
 
     <div class="mt-6 grid gap-3 sm:grid-cols-5">
-      {top.map((n) => (
+      {top.slice(0, 5).map((n) => (
         <div class="glass-card p-4">
           <p class="text-base font-bold text-ink">{n.name}</p>
           <p class="mt-1 text-xs leading-relaxed text-mute line-clamp-2">{n.meaning}</p>
@@ -53,17 +60,52 @@ const description =
       <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Popular boy names by origin</h2>
     </div>
     <div class="mt-6 grid gap-4 sm:grid-cols-3">
-      <a href="/search?origin=Hindu" class="glass-card hoverable p-6">
+      <a href="/names/origin/hindu" class="glass-card hoverable p-6">
         <h3 class="text-lg font-bold text-ink">Hindu boy names</h3>
         <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Aarav, Vivaan, Advait — timeless Sanskrit names with deep spiritual meanings.</p>
       </a>
-      <a href="/search?origin=Muslim" class="glass-card hoverable p-6">
+      <a href="/names/origin/muslim" class="glass-card hoverable p-6">
         <h3 class="text-lg font-bold text-ink">Muslim boy names</h3>
         <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">Muhammad, Zain, Hamza — beautiful names with strong Islamic heritage.</p>
       </a>
-      <a href="/search?origin=Christian" class="glass-card hoverable p-6">
+      <a href="/names/origin/christian" class="glass-card hoverable p-6">
         <h3 class="text-lg font-bold text-ink">Christian boy names</h3>
         <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">David, Michael, Noah — classic biblical names loved for generations.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Explore more boy names</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">
+        Browse boy names by starting letter, origin or meaning, and see what is trending this year.
+      </p>
+    </div>
+    <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <a href="/names/starting-with" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Boy names by letter</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Jump to any starting letter from A to Z.</p>
+      </a>
+      <a href="/names/origin" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Boy names by origin</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Hindu, Muslim, Christian, Greek and many more traditions.</p>
+      </a>
+      <a href="/names/meaning" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Boy names by meaning</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Names meaning strength, light, wisdom, peace and more.</p>
+      </a>
+      <a href="/trending-baby-names-2026" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Trending boy names 2026</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">The most popular boy names parents are choosing this year.</p>
+      </a>
+      <a href="/girl-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Baby girl names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Beautiful girl names with meanings and origins.</p>
+      </a>
+      <a href="/blog/how-to-choose-baby-name" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">How to choose a baby name</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">A complete guide to picking a name you will love.</p>
       </a>
     </div>
   </section>

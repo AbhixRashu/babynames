@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import {
+  THEMES,
+  namesByTheme,
+  byRank,
+  genderCounts,
+  faqSchema,
+  itemListSchema,
+  HOME_CRUMB,
+} from '../../../lib/seo';
+
+export function getStaticPaths() {
+  return THEMES.map((t) => ({
+    params: { theme: t.slug },
+    props: { theme: t.slug },
+  }));
+}
+
+const { theme } = Astro.props;
+const themeMeta = THEMES.find((t) => t.slug === theme)!;
+const all = namesByTheme(theme);
+const counts = genderCounts(all);
+const top = byRank(all, 60);
+const boysTop = top.filter((n) => n.gender === 'boy').slice(0, 4);
+const girlsTop = top.filter((n) => n.gender === 'girl').slice(0, 4);
+
+const title = `Baby Names Meaning ${themeMeta.label} — ${all.length}+ Beautiful Names`;
+const description = `Browse ${all.length}+ baby names that mean ${themeMeta.label}, with meanings and origins. Compare beautiful boy, girl and unisex picks — free, no sign-up.`;
+
+const crumbs = [
+  HOME_CRUMB,
+  { label: 'Names by Meaning', href: '/names/meaning' },
+  { label: `Meaning ${themeMeta.label}`, href: `/names/meaning/${theme}` },
+];
+
+const faqItems = [
+  {
+    q: `What baby names mean ${themeMeta.label}?`,
+    a: `There are ${all.length} baby names that mean ${themeMeta.label} in our collection, including ${top.slice(0, 6).map((n) => n.name).join(', ')}. Each name below shows its full meaning, origin and gender so you can compare at a glance.`,
+  },
+  {
+    q: `What is the best ${themeMeta.label} name for a boy?`,
+    a: boysTop.length
+      ? `Popular boy names meaning ${themeMeta.label} include ${boysTop.map((n) => n.name).join(', ')}. You will find ${counts.boy} boy names with this meaning in the list below, ordered by popularity.`
+      : `There are ${counts.boy} boy names meaning ${themeMeta.label} — browse the table below to compare them.`,
+  },
+  {
+    q: `What is the best ${themeMeta.label} name for a girl?`,
+    a: girlsTop.length
+      ? `Popular girl names meaning ${themeMeta.label} include ${girlsTop.map((n) => n.name).join(', ')}. Explore all ${counts.girl} girl names with this meaning in the table below.`
+      : `There are ${counts.girl} girl names meaning ${themeMeta.label} — explore them in the table below.`,
+  },
+];
+
+const faq = faqSchema(faqItems);
+const listSchema = itemListSchema(top);
+---
+
+<BaseLayout title={title} description={description}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(faq)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(listSchema)} />
+
+  <section class="pb-8 pt-2 sm:pt-6">
+    <Breadcrumbs crumbs={crumbs} />
+    <div class="max-w-3xl">
+      <span class="badge-gender badge-girl">Names by meaning</span>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Baby names meaning {themeMeta.label}</h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-soft">
+        {themeMeta.blurb} On this page you will find {all.length} baby names that mean {themeMeta.label} — {counts.boy} for boys,
+        {counts.girl} for girls and {counts.unisex} for unisex — drawn from {new Set(all.map((n) => n.origin)).size} origins.
+        Each entry shows the meaning, origin and gender, so you can shortlist the {themeMeta.label}-inspired names that fit your
+        family best.
+      </p>
+      <p class="mt-3 text-base leading-relaxed text-ink-soft">
+        {boysTop.length > 0 && (
+          <>
+            For a boy, popular {themeMeta.label} names include {boysTop.map((n) => n.name).join(', ')}. For a girl, favourites
+            include {girlsTop.length > 0 ? girlsTop.map((n) => n.name).join(', ') : 'a lovely set of elegant choices'}. Names below
+            are sorted by popularity, mixing timeless classics with modern and unique picks.
+          </>
+        )}
+      </p>
+      <p class="mt-3 text-base leading-relaxed text-ink-soft">
+        Try each name out loud with your surname, and shorten it to test the nickname. When you have a few
+        {themeMeta.label}-name candidates, open the free baby names generator and type "{themeMeta.label}" in the meaning box to
+        see even more matches filtered by origin, rashi and starting letter — then heart your favourites and check how they flow
+        with a middle or sibling name.
+      </p>
+      <div class="mt-5 flex flex-wrap items-center gap-2 text-xs font-medium text-mute">
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          {all.length}+ names meaning {themeMeta.label}
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          Meanings, origins & gender included
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-8">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Names meaning {themeMeta.label}</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">
+        Popular {themeMeta.label} names first, sorted by rank, with meaning, origin and gender shown for comparison.
+      </p>
+    </div>
+    <div class="glass-card mt-5 overflow-x-auto">
+      <table class="w-full min-w-[560px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-line text-xs uppercase tracking-wider text-mute">
+            <th scope="col" class="px-4 py-3 font-semibold">Name</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Meaning</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Origin</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Gender</th>
+          </tr>
+        </thead>
+        <tbody>
+          {top.map((n) => (
+            <tr class="border-b border-line last:border-0 hover:bg-card-2/60">
+              <td class="px-4 py-2.5 font-semibold text-ink">{n.name}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.meaning}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.origin}</td>
+              <td class="px-4 py-2.5 capitalize text-ink-soft">{n.gender}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    {all.length > top.length && (
+      <p class="mt-3 text-xs text-mute">
+        Showing {top.length} of {all.length} {themeMeta.label} names. Open the generator and type "{themeMeta.label}" in the
+        meaning box to browse the complete list.
+      </p>
+    )}
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Browse names by meaning</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">Explore other beautiful name meanings.</p>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2">
+      {THEMES.map((t) => (
+        <a
+          href={`/names/meaning/${t.slug}`}
+          class:list={['chip', t.slug === theme && 'active']}
+          aria-current={t.slug === theme ? 'page' : undefined}
+        >
+          {t.label}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Related name pages</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">
+        Compare full gender lists, explore names by letter or origin, and see what is trending.
+      </p>
+    </div>
+    <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <a href="/boy-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">All baby boy names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Strong, classic and unique boy names with meanings.</p>
+      </a>
+      <a href="/girl-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">All baby girl names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Beautiful girl names from every tradition.</p>
+      </a>
+      <a href="/unisex-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">All unisex names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Gender-neutral names that suit any child.</p>
+      </a>
+      <a href="/names/starting-with" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by letter</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Jump to any starting letter A–Z.</p>
+      </a>
+      <a href="/names/origin" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by origin</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Browse Hindu, Muslim, Christian, Greek and more.</p>
+      </a>
+      <a href="/trending-baby-names-2026" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Trending names 2026</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">The most popular names parents are choosing this year.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="mt-12" aria-labelledby="faq-heading">
+    <div class="mx-auto max-w-3xl">
+      <h2 id="faq-heading" class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">{themeMeta.label} baby names FAQ</h2>
+      <div class="mt-6 space-y-3">
+        {faqItems.map((item) => (
+          <details class="glass-card p-5 sm:p-6">
+            <summary class="cursor-pointer list-none text-base font-bold text-ink sm:text-lg">{item.q}</summary>
+            <p class="prose-s mt-4 text-sm leading-relaxed text-ink-soft sm:text-[15px]">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

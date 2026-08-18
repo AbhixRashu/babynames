@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { NAMES } from '../lib/names';
+import { byRank, faqSchema, HOME_CRUMB } from '../lib/seo';
+
+const ranked = byRank(NAMES, 40);
+const boys = byRank(NAMES.filter((n) => n.gender === 'boy'), 20);
+const girls = byRank(NAMES.filter((n) => n.gender === 'girl'), 20);
+const unisex = byRank(NAMES.filter((n) => n.gender === 'unisex'), 15);
+
+const title = 'Trending Baby Names 2026 — Most Popular Names This Year';
+const description =
+  'The trending baby names of 2026, ranked by popularity across every origin. See the most popular boy, girl and unisex names this year and find your favourite — free.';
+
+const crumbs = [HOME_CRUMB, { label: 'Trending Baby Names 2026', href: '/trending-baby-names-2026' }];
+
+const faqItems = [
+  {
+    q: 'What are the most popular baby names in 2026?',
+    a: `Our popularity ranking currently places ${ranked.slice(0, 6).map((n) => n.name).join(', ')} among the top baby names. The full trending list on this page shows the most popular boy, girl and unisex names, with meanings and origins included for every pick.`,
+  },
+  {
+    q: 'What are the trendiest baby boy names in 2026?',
+    a: boys.length
+      ? `Trending boy names in 2026 include ${boys.slice(0, 6).map((n) => n.name).join(', ')}. Browse the complete top-20 boy list below, or explore every boy name by starting letter and origin for more ideas.`
+      : 'Explore the top boy names on this page, or use the free generator to filter every boy name by letter, origin and meaning.',
+  },
+  {
+    q: 'What are the trendiest baby girl names in 2026?',
+    a: girls.length
+      ? `Trending girl names in 2026 include ${girls.slice(0, 6).map((n) => n.name).join(', ')}. The full top-20 girl list is below, and you can browse hundreds more girl names by meaning, letter and origin.`
+      : 'Explore the top girl names on this page, or use the free generator to filter every girl name by letter, origin and meaning.',
+  },
+];
+
+const faq = faqSchema(faqItems);
+---
+
+<BaseLayout title={title} description={description}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(faq)} />
+
+  <section class="pb-8 pt-2 sm:pt-6">
+    <Breadcrumbs crumbs={crumbs} />
+    <div class="max-w-3xl">
+      <span class="badge-gender badge-unisex">Trending 2026</span>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">Trending baby names 2026</h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-soft">
+        Which baby names are parents choosing in 2026? This page brings together the most popular names across every origin and
+        tradition, ranked by popularity so you can spot the classics that never leave the top and the rising stars climbing the
+        charts. From powerful modern choices to elegant timeless favourites, the lists below cover popular boy names, girl names
+        and unisex names with meanings and origins included.
+      </p>
+      <p class="mt-3 text-base leading-relaxed text-ink-soft">
+        Popularity is one lens, but the right name is deeply personal. Use these rankings as inspiration, then shortlist names
+        that resonate with your family's culture, meaning and sound. The free baby names generator lets you filter the whole
+        collection by gender, origin, starting letter and meaning, so you can build a shortlist that feels like you — then use
+        the compatibility checker to see how your top picks sound together.
+      </p>
+      <div class="mt-5 flex flex-wrap items-center gap-2 text-xs font-medium text-mute">
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          Rankings across {NAMES.length}+ curated names
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 text-pink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5" /></svg>
+          Meanings & origins for every pick
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Top 40 baby names overall</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">The most popular baby names right now, boys and girls combined.</p>
+    </div>
+    <div class="glass-card mt-5 overflow-x-auto">
+      <table class="w-full min-w-[560px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-line text-xs uppercase tracking-wider text-mute">
+            <th scope="col" class="px-4 py-3 font-semibold">Rank</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Name</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Meaning</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Origin</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Gender</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ranked.map((n, i) => (
+            <tr class="border-b border-line last:border-0 hover:bg-card-2/60">
+              <td class="px-4 py-2.5 font-semibold text-mute">{i + 1}</td>
+              <td class="px-4 py-2.5 font-semibold text-ink">{n.name}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.meaning}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.origin}</td>
+              <td class="px-4 py-2.5 capitalize text-ink-soft">{n.gender}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Trending baby boy names</h2>
+    </div>
+    <div class="glass-card mt-5 overflow-x-auto">
+      <table class="w-full min-w-[560px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-line text-xs uppercase tracking-wider text-mute">
+            <th scope="col" class="px-4 py-3 font-semibold">Rank</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Name</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Meaning</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Origin</th>
+          </tr>
+        </thead>
+        <tbody>
+          {boys.map((n, i) => (
+            <tr class="border-b border-line last:border-0 hover:bg-card-2/60">
+              <td class="px-4 py-2.5 font-semibold text-mute">{i + 1}</td>
+              <td class="px-4 py-2.5 font-semibold text-ink">{n.name}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.meaning}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.origin}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Trending baby girl names</h2>
+    </div>
+    <div class="glass-card mt-5 overflow-x-auto">
+      <table class="w-full min-w-[560px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-line text-xs uppercase tracking-wider text-mute">
+            <th scope="col" class="px-4 py-3 font-semibold">Rank</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Name</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Meaning</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Origin</th>
+          </tr>
+        </thead>
+        <tbody>
+          {girls.map((n, i) => (
+            <tr class="border-b border-line last:border-0 hover:bg-card-2/60">
+              <td class="px-4 py-2.5 font-semibold text-mute">{i + 1}</td>
+              <td class="px-4 py-2.5 font-semibold text-ink">{n.name}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.meaning}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.origin}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Trending unisex names</h2>
+    </div>
+    <div class="glass-card mt-5 overflow-x-auto">
+      <table class="w-full min-w-[560px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-line text-xs uppercase tracking-wider text-mute">
+            <th scope="col" class="px-4 py-3 font-semibold">Rank</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Name</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Meaning</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Origin</th>
+          </tr>
+        </thead>
+        <tbody>
+          {unisex.map((n, i) => (
+            <tr class="border-b border-line last:border-0 hover:bg-card-2/60">
+              <td class="px-4 py-2.5 font-semibold text-mute">{i + 1}</td>
+              <td class="px-4 py-2.5 font-semibold text-ink">{n.name}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.meaning}</td>
+              <td class="px-4 py-2.5 text-ink-soft">{n.origin}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Explore trending names further</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-soft sm:text-base">
+        Dive deeper into popular names by gender, letter or meaning.
+      </p>
+    </div>
+    <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <a href="/boy-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">All baby boy names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Strong, classic and unique boy names with meanings.</p>
+      </a>
+      <a href="/girl-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">All baby girl names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Beautiful girl names from every tradition.</p>
+      </a>
+      <a href="/unisex-names" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">All unisex names</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Gender-neutral names that suit any child.</p>
+      </a>
+      <a href="/names/starting-with" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by letter</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Jump to any starting letter A–Z.</p>
+      </a>
+      <a href="/names/origin" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Names by origin</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Browse Hindu, Muslim, Christian, Greek and more.</p>
+      </a>
+      <a href="/blog" class="glass-card hoverable p-5">
+        <h3 class="text-base font-bold text-ink">Baby name blog</h3>
+        <p class="mt-1 text-sm leading-relaxed text-ink-soft">Guides on choosing names, trends and world names.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="mt-12" aria-labelledby="faq-heading">
+    <div class="mx-auto max-w-3xl">
+      <h2 id="faq-heading" class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Trending baby names FAQ</h2>
+      <div class="mt-6 space-y-3">
+        {faqItems.map((item) => (
+          <details class="glass-card p-5 sm:p-6">
+            <summary class="cursor-pointer list-none text-base font-bold text-ink sm:text-lg">{item.q}</summary>
+            <p class="prose-s mt-4 text-sm leading-relaxed text-ink-soft sm:text-[15px]">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
